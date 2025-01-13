@@ -1,32 +1,23 @@
-from fastapi import FastAPI, Depends
-from pydantic import BaseModel
-from typing import TypedDict
-from sqlmodel import SQLModel, Session, create_engine, select
-from model.user import User
-
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+from fastapi import FastAPI
+from database.db_init import create_db_and_tables
 
 
 app = FastAPI()
-config = {"version": "1.0.0", "name": "My API"}
-
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session
 
 
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Dans le beurre y a de l'huile"}
+
+
+# def get_session():
+#     with Session(engine) as session:
+#         yield session
 
 
 # @app.post("/users/")
@@ -38,48 +29,43 @@ def on_startup():
 #     return user
 
 
-@app.get("/users/")
-def read_users(session=Depends(get_session)):
-    users = session.exec(select(User)).all()
-    return users
+# @app.get("/users/")
+# def read_users(session=Depends(get_session)):
+#     users = session.exec(select(User)).all()
+#     return users
 
 
-@app.get("/users/{user_id}")
-def read_user(user_id: int, session=Depends(get_session)):
-    user = session.get(User, user_id)
-    return user
+# @app.get("/users/{user_id}")
+# def read_user(user_id: int, session=Depends(get_session)):
+#     user = session.get(User, user_id)
+#     return user
 
 
-class Item(BaseModel):
-    name: str
-    description: str
-    price: float
-    tax: float
+# class Item(BaseModel):
+#     name: str
+#     description: str
+#     price: float
+#     tax: float
 
 
-class Config(TypedDict):
-    version: str
-    name: str
+# class Config(TypedDict):
+#     version: str
+#     name: str
 
 
-@app.get("/")
-def read_root():
-    return {"message": "Dans le beurre y a de l'huile"}
+# @app.post("/items")
+# def create_item(item: Item) -> Item:
+#     return item
 
 
-@app.post("/items")
-def create_item(item: Item) -> Item:
-    return item
+# def get_config():
+#     return config
 
 
-def get_config():
-    return config
+# def get_app_name(config: Config = Depends(get_config)):
+#     return config["name"]
 
 
-def get_app_name(config: Config = Depends(get_config)):
-    return config["name"]
-
-
-@app.get("/app_name")
-def read_app_name(app_name: str = Depends(get_app_name)):
-    return {"app_name": app_name}
+# @app.get("/app_name")
+# def read_app_name(app_name: str = Depends(get_app_name)):
+#     return {"app_name": app_name}

@@ -11,6 +11,6 @@ class Account(SQLModel, table=True):
     name: Optional[str] = Field()
     is_activated: bool = Field()
     amount: float = Field()
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    open_at: datetime = Field(default_factory=datetime.utcnow)
     is_main: bool = Field()
-    desactivated_at: Optional[datetime] = Field()
+    closed_at: Optional[datetime] = Field()
