@@ -12,7 +12,7 @@ source .venv/bin/activate
 ### Launch project
 
 ```sh
-fastapi dev main
+fastapi dev main.py
 ```
 
 ### Test API
