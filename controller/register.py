@@ -2,7 +2,7 @@ from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import jwt
 
-from database.user import User
+from database.models import User
 from main import app
 
 secret_key = "very_secret_key"
