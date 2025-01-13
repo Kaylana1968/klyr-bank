@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from typing import TypedDict
-from sqlmodel import Field, SQLModel, Session, create_engine, select
+from sqlmodel import SQLModel, Session, create_engine, select
+from model.user import User
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -14,11 +15,6 @@ app = FastAPI()
 config = {"version": "1.0.0", "name": "My API"}
 
 
-class User(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(index=True)
-
-
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
@@ -28,22 +24,18 @@ def get_session():
         yield session
 
 
-class CreateUser(BaseModel):
-    name: str
-
-
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
 
 
-@app.post("/users/")
-def create_user(body: CreateUser, session=Depends(get_session)) -> User:
-    user = User(name=body.name)
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-    return user
+# @app.post("/users/")
+# def create_user(body: CreateUser, session=Depends(get_session)) -> User:
+#     user = User(name=body.name)
+#     session.add(user)
+#     session.commit()
+#     session.refresh(user)
+#     return user
 
 
 @app.get("/users/")
