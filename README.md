@@ -2,12 +2,18 @@
 
 ### Activate venv
 
-```.venv/scripts/activate```<br>
-```source .venv/bin/activate```
+```sh
+.venv/scripts/activate
+```
+```sh
+source .venv/bin/activate
+```
 
 ### Launch project
 
-```fastapi dev main```
+```sh
+fastapi dev main
+```
 
 ### Test API
 
