@@ -17,4 +17,4 @@ fastapi dev main
 
 ### Test API
 
-[Docs](localhost:8000/docs)
+[Docs](http://localhost:8000/docs)
