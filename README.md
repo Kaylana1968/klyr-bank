@@ -17,4 +17,4 @@ fastapi dev main
 
 ### Test API
 
-<a href="localhost:8000/docs">Docs</a>
+[Docs](localhost:8000/docs)
