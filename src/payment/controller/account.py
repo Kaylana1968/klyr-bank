@@ -1,17 +1,17 @@
 
 from fastapi import APIRouter, Depends
 from sqlmodel import select 
+from src.auth.controller.utils import get_user
 from database.init import get_session
 from database.models import Account
-from ..model.account import OpenAccount
 from uuid import UUID
 
 router = APIRouter()
 
 @router.post("/account/open")
-def open_account(body: OpenAccount, session=Depends(get_session)) -> Account:
+def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
     account = Account(
-        user_id= body.user_id,
+        user_id= UUID(user["id"]),
         is_activated=True,
         amount= 0,
         is_main=True
