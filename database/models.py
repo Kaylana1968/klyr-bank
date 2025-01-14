@@ -1,5 +1,5 @@
-from sqlmodel import SQLModel, Field
-from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List
 from uuid import UUID, uuid4
 from datetime import datetime
 
@@ -9,6 +9,8 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True)
     password: str = Field()
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    #Relation
+    accounts: List["Account"] = Relationship(back_populates="user")
 
 
 class Account(SQLModel, table=True):
@@ -20,6 +22,8 @@ class Account(SQLModel, table=True):
     open_at: datetime = Field(default_factory=datetime.utcnow)
     is_main: bool = Field()
     closed_at: Optional[datetime] = Field()
+    #Relation
+    user: "User" = Relationship(back_populates="accounts")
 
 
 class Transaction(SQLModel, table=True):
