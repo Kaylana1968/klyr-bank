@@ -9,7 +9,7 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True)
     password: str = Field()
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    #Relation
+    # Relation
     accounts: List["Account"] = Relationship(back_populates="user")
 
 
@@ -22,7 +22,7 @@ class Account(SQLModel, table=True):
     open_at: datetime = Field(default_factory=datetime.utcnow)
     is_main: bool = Field()
     closed_at: Optional[datetime] = Field()
-    #Relation
+    # Relation
     user: "User" = Relationship(back_populates="accounts")
 
 
@@ -33,3 +33,10 @@ class Transaction(SQLModel, table=True):
     amount: float = Field()
     status: str = Field()
     sent_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Deposit(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    account_id: UUID = Field(foreign_key="account.id", index=True)
+    amount: float = Field()
+    deposited_at: datetime = Field(default_factory=datetime.utcnow)

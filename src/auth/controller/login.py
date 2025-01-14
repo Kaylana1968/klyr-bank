@@ -15,7 +15,8 @@ def login(body: CreateUser, session=Depends(get_session)):
 
     if user == None:
         return {"message": "User not found"}
-    elif not verify_password(password=body.password, hashed_password=user.password):
+
+    if not verify_password(password=body.password, hashed_password=user.password):
         return {"message": "Password mismatch"}
 
     return {"token": generate_token(user)}
