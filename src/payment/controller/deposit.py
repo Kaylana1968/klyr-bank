@@ -20,7 +20,7 @@ def deposit(body: AddDeposit, user=Depends(get_user), session=Depends(get_sessio
         return {"message": "The account is not yours!"}
 
     deposit = Deposit(account_id=account.id, amount=body.amount)
-    account.amount += body.amount
+    account.amount += amount
 
     session.add(deposit)
     session.add(account)
