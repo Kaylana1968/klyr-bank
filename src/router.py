@@ -6,7 +6,6 @@ from .payment.controller.account import router as account_router
 from .payment.controller.deposit import router as deposit_router
 
 
-
 def add_router_to_app(app, router):
     app.include_router(router, prefix="/api")
 
