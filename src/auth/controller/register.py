@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
-from sqlmodel import select
-
 from database.init import get_session
 from database.models import User
 from ..model.user import CreateUser
-from .utils import hash_password, generate_token, get_user
+from .utils import hash_password, generate_token
+
 
 router = APIRouter()
 
@@ -16,8 +15,3 @@ def register(body: CreateUser, session=Depends(get_session)) -> User:
     session.refresh(user)
 
     return {"token": generate_token(user)}
-
-
-@router.get("/me")
-def me(user=Depends(get_user)):
-    return user
