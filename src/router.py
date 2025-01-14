@@ -11,3 +11,4 @@ def define_routes(app):
     add_router_to_app(app, register_router)
     add_router_to_app(app, login_router)
     add_router_to_app(app, account_router)
+    

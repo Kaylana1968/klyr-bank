@@ -1,9 +1,10 @@
 
 from fastapi import APIRouter, Depends
-
+from sqlmodel import select 
 from database.init import get_session
 from database.models import Account
 from ..model.account import OpenAccount
+from uuid import UUID
 
 router = APIRouter()
 
@@ -24,3 +25,16 @@ def open_account(body: OpenAccount, session=Depends(get_session)) -> Account:
 
 # @router.post("/account/close")
 
+@router.get("/account/{account_id}")
+def show_account(account_id:str, session=Depends(get_session)) -> Account:
+    account = session.exec(select(Account).where(Account.id == UUID(account_id))).first()
+
+    if account == None:
+        return {"message":"Account not found"}
+    
+    if account.closed_at:
+        return {"message":"Account closed since "+ account.closed_at}
+    
+    return account
+    #return {"name":account.name,"amount":account.amount,"open_at":account.open_at,"is_main":account.is_main,}
+    
