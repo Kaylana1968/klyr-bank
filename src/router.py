@@ -1,4 +1,4 @@
-from src.auth.controller.register import router as register_router
+from .auth.controller.register import router as register_router
 
 
 def add_router_to_app(app, router):

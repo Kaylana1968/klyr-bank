@@ -7,7 +7,7 @@ from sqlmodel import select
 
 from database.init import get_session
 from database.models import User
-from src.auth.model.user import CreateUser
+from ..model.user import CreateUser
 
 router = APIRouter()
 
