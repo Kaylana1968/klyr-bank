@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends
 from database.init import get_session
 from database.models import Account, Deposit
 from src.auth.controller.utils import get_user
-from src.auth.controller.utils import get_user
 from ..model.deposit import AddDeposit
 
 router = APIRouter()
