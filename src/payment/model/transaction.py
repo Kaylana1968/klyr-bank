@@ -10,3 +10,6 @@ class AddTransaction(BaseModel) :
 
 class MyTransactions(BaseModel) :
     account_id: UUID
+
+class CancelTransaction(BaseModel) :
+    id : UUID 
