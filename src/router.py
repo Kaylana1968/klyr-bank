@@ -8,6 +8,8 @@ from .payment.controller.transaction import router as transaction_router
 from .payment.controller.account import router as account_router
 from .payment.controller.deposit import router as deposit_router
 
+from .cron_jobs import router as cron_jobs_router
+
 
 def add_router_to_app(app, router):
     app.include_router(router, prefix="/api")
@@ -21,3 +23,5 @@ def define_routes(app):
     add_router_to_app(app, deposit_router)
     add_router_to_app(app, transaction_router)
     add_router_to_app(app, accounts_router)
+    add_router_to_app(app, cron_jobs_router)
+    

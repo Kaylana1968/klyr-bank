@@ -27,12 +27,16 @@ def show_account(account_id:str, session=Depends(get_session)):
 
 # Ouvrir un compte bancaire
 @router.post("/account/open")
-def open_account(user=Depends(get_user), session=Depends(get_session)):
+def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
+    statement = select(Account).where(Account.user_id == UUID(user["id"]), Account.is_main) 
+    existing_main_account = session.exec(statement).first()
+
+    is_main_verif = existing_main_account is None
     account = Account(
         user_id= UUID(user["id"]),
         is_activated=True,
         amount= 0,
-        is_main=True
+        is_main=is_main_verif
     )
     session.add(account)
     session.commit()
