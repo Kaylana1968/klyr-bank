@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post("/register")
-def register(body: CreateUser, session=Depends(get_session)) -> User:
+def register(body: CreateUser, session=Depends(get_session)):
     user = User(email=body.email, password=hash_password(body.password))
     session.add(user)
     session.commit()

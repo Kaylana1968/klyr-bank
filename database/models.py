@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from uuid import UUID, uuid4
 from datetime import datetime
+from .utils import iban_generator
 
 
 class User(SQLModel, table=True):
@@ -23,6 +24,7 @@ class Account(SQLModel, table=True):
     open_at: datetime = Field(default_factory=datetime.utcnow)
     is_main: bool = Field()
     closed_at: Optional[datetime] = Field()
+    iban: str = Field(default_factory=iban_generator, unique=True)
 
     # Relations
     user: "User" = Relationship(back_populates="accounts")
