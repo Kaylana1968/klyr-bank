@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import select 
 from src.auth.controller.utils import get_user
 from database.init import get_session
-from database.models import Account
+from database.models import Account, Transaction
 from uuid import UUID
 import datetime
 
@@ -44,9 +44,13 @@ def open_account(user=Depends(get_user), session=Depends(get_session)):
 @router.put("/account/close/{account_id}")
 def close_account(account_id: str, session=Depends(get_session)):
     account: Account = session.exec(select(Account).where(Account.id == UUID(account_id))).first()
+    transaction: Transaction = session.exec(select(Transaction).where(Transaction.sender_account_id == account_id , Transaction.receiver_account_id == account_id, Transaction.status == "PENDING")).first()
+    return transaction
 
     if account.is_main == True:
         return {"message":"You can't close the main account"}
+    elif transaction.status == "PENDING":
+        return {"message":"You can't close the account because a transaction is pending"}
     
 
     account.closed_at = datetime.datetime.now()
