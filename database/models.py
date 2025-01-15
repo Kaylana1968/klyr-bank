@@ -33,7 +33,7 @@ class Transaction(SQLModel, table=True):
     sender_account_id: UUID = Field(foreign_key="account.id", index=True)
     receiver_account_id: UUID = Field(foreign_key="account.id", index=True)
     amount: float = Field()
-    status: str = Field()
+    status: str = Field(default="PENDING")
     sent_at: datetime = Field(default_factory=datetime.utcnow)
 
 
