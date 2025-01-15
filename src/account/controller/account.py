@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import select
-from sqlalchemy import or_
+from sqlalchemy import and_, or_
 from src.auth.controller.utils import get_user
 from database.init import get_session
 from database.models import Account, Transaction
@@ -61,29 +61,29 @@ def open_account(user=Depends(get_user), session=Depends(get_session)) -> Accoun
 
 # Fermer un compte bancaire
 @router.put("/account/close/{account_id}")
-def close_account(account_id: str, session=Depends(get_session)):
+def close_account(account_id: str, user=Depends(get_user), session=Depends(get_session)):
 
-    account: Account = session.exec(
-        select(Account).where(Account.id == UUID(account_id))
-    ).first()
+    account: Account = session.exec(select(Account).where(Account.id == UUID(account_id))).first()
 
     if account.is_main == True:
-        return {"message": "You can't close the main account"}
+        return {"message":"You can't close the main account"}
+    
+    transaction: Transaction = session.exec(select(Transaction).where(or_(Transaction.sender_account_id == UUID(account_id) , Transaction.receiver_account_id == UUID(account_id), Transaction.status == "PENDING"))).first()
 
-    transaction: Transaction = session.exec(
-        select(Transaction).where(
-            or_(
-                Transaction.sender_account_id == UUID(account_id),
-                Transaction.receiver_account_id == UUID(account_id),
-                Transaction.status == "PENDING",
-            )
-        )
-    ).first()
+    if transaction == True and transaction.status == "PENDING":
+        return {"message":"You can't close the account because a transaction is pending"}
+    
+    mainAccount: Account = None
 
-    if transaction.status == "PENDING":
-        return {
-            "message": "You can't close the account because a transaction is pending"
-        }
+    if account.amount > 0 :
+        mainAccount: Account = session.exec(select(Account).where(and_(Account.user_id == UUID(user["id"]), Account.closed_at == None ))).first()
+        if mainAccount == None:
+            return {"message": "Not found your main account for transfer your amount"}
+        mainAccount.amount += account.amount
+        account.amount = 0
+        session.add(mainAccount)
+        session.commit()
+        session.refresh(mainAccount)
 
     account.closed_at = datetime.datetime.now()
 
@@ -91,4 +91,6 @@ def close_account(account_id: str, session=Depends(get_session)):
     session.commit()
     session.refresh(account)
 
+    if mainAccount :
+        return {"message": "The account has been closed and his amount has been transferred to your main account"}    
     return {"message": "The account has been closed"}

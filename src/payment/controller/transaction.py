@@ -33,12 +33,13 @@ def transaction(
     if sender_account.amount < amount:
         return {"message": "You dont have enough money!"}
 
-    transaction = Transaction(
-        sender_account_id=body.sender_account_id,
-        receiver_account_id=body.receiver_account_id,
-        amount=body.amount,
-        status="PENDING",
-    )
+    if receiver_account.closed_at != None:
+        return {"message": "Receiver account is closed"}
+    
+    if sender_account.closed_at != None:
+        return {"message": "Your account is closed"}
+
+    transaction = Transaction(sender_account_id=body.sender_account_id, receiver_account_id=body.receiver_account_id, amount=body.amount, status="PENDING")
     sender_account.amount -= amount
 
     session.add(transaction)
