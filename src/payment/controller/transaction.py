@@ -5,7 +5,7 @@ from sqlmodel import select, or_
 from database.init import get_session
 from database.models import Account, Transaction
 from src.auth.controller.utils import get_user
-from ..model.transaction import AddTransaction, MyTransactions, CancelTransaction
+from ..model.transaction import AddTransaction
 
 router = APIRouter()
 
