@@ -28,12 +28,13 @@ class Account(SQLModel, table=True):
     user: "User" = Relationship(back_populates="accounts")
     sent_transactions: List["Transaction"] = Relationship(
         back_populates="sender_account",
-        sa_relationship_kwargs={"foreign_keys": "Transaction.sender_account_id"}
+        sa_relationship_kwargs={"foreign_keys": "Transaction.sender_account_id"},
     )
     received_transactions: List["Transaction"] = Relationship(
         back_populates="receiver_account",
-        sa_relationship_kwargs={"foreign_keys": "Transaction.receiver_account_id"}
+        sa_relationship_kwargs={"foreign_keys": "Transaction.receiver_account_id"},
     )
+    deposits: List["Deposit"] = Relationship(back_populates="account")
 
 
 class Transaction(SQLModel, table=True):
@@ -47,11 +48,11 @@ class Transaction(SQLModel, table=True):
     # Relations
     sender_account: "Account" = Relationship(
         back_populates="sent_transactions",
-        sa_relationship_kwargs={"foreign_keys": "Transaction.sender_account_id"}
+        sa_relationship_kwargs={"foreign_keys": "Transaction.sender_account_id"},
     )
     receiver_account: "Account" = Relationship(
         back_populates="received_transactions",
-        sa_relationship_kwargs={"foreign_keys": "Transaction.receiver_account_id"}
+        sa_relationship_kwargs={"foreign_keys": "Transaction.receiver_account_id"},
     )
 
 
@@ -60,3 +61,6 @@ class Deposit(SQLModel, table=True):
     account_id: UUID = Field(foreign_key="account.id", index=True)
     amount: float = Field()
     deposited_at: datetime = Field(default_factory=datetime.utcnow)
+
+    # Relations
+    account: "Account" = Relationship(back_populates="deposits")

@@ -5,7 +5,7 @@ from sqlmodel import select, or_
 from database.init import get_session
 from database.models import Account, Transaction
 from src.auth.controller.utils import get_user
-from ..model.transaction import AddTransaction, MyTransactions, CancelTransaction
+from ..model.transaction import AddTransaction
 
 router = APIRouter()
 
@@ -35,11 +35,16 @@ def transaction(
 
     if receiver_account.closed_at != None:
         return {"message": "Receiver account is closed"}
-    
+
     if sender_account.closed_at != None:
         return {"message": "Your account is closed"}
 
-    transaction = Transaction(sender_account_id=body.sender_account_id, receiver_account_id=body.receiver_account_id, amount=body.amount, status="PENDING")
+    transaction = Transaction(
+        sender_account_id=body.sender_account_id,
+        receiver_account_id=body.receiver_account_id,
+        amount=body.amount,
+        status="PENDING",
+    )
     sender_account.amount -= amount
 
     session.add(transaction)
@@ -60,16 +65,8 @@ def my_transactions(
     if str(account.user_id) != user["id"]:
         return {"message": "The account is not yours!"}
 
-    transactions = session.exec(
-        select(Transaction)
-        .where(
-            or_(
-                account.id == Transaction.sender_account_id,
-                account.id == Transaction.receiver_account_id,
-            )
-        )
-        .order_by(Transaction.sent_at.desc())
-    ).all()
+    transactions = account.sent_transactions + account.received_transactions
+    deposits = account.deposits
 
     toReturn = []
     for transaction in transactions:
@@ -79,28 +76,42 @@ def my_transactions(
             {
                 "sender_account_id": transaction.sender_account_id,
                 "amount": transaction.amount,
-                "sent_at": transaction.sent_at,
+                "done_at": transaction.sent_at,
                 "status": transaction.status,
+                "is_deposit": False,
             }
             if transaction.sender_account_id != account.id
             else {
                 "receiver_account_id": transaction.receiver_account_id,
                 "amount": transaction.amount,
-                "sent_at": transaction.sent_at,
+                "done_at": transaction.sent_at,
                 "status": transaction.status,
+                "is_deposit": False,
             }
         )
 
-    return toReturn
+    for deposit in deposits:
+        toReturn.append(
+            {
+                "amount": deposit.amount,
+                "done_at": deposit.deposited_at,
+                "is_deposit": True,
+            }
+        )
+
+    return sorted(toReturn, key=lambda x: x["done_at"], reverse=True)
+
 
 @router.post("/cancel-transaction/{transaction_id}")
-def cancel_transaction (transaction_id: str, user=Depends(get_user), session=Depends(get_session)) : 
+def cancel_transaction(
+    transaction_id: str, user=Depends(get_user), session=Depends(get_session)
+):
     transaction = session.get(Transaction, UUID(transaction_id))
 
     if str(transaction.sender_account.user_id) != user["id"]:
         return {"message": "The account is not yours!"}
 
-    if transaction.status == "PENDING" : 
+    if transaction.status == "PENDING":
         transaction.status = "CANCELED"
         transaction.sender_account.amount += transaction.amount
 
@@ -108,8 +119,7 @@ def cancel_transaction (transaction_id: str, user=Depends(get_user), session=Dep
         session.commit()
         session.refresh(transaction)
 
-        return {"message" : "The transaction has been canceled !"}
+        return {"message": "The transaction has been canceled !"}
 
-    else : 
-        return {"message" : "The transaction is already received !"}
-
+    else:
+        return {"message": "The transaction is already received !"}
