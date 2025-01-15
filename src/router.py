@@ -1,11 +1,10 @@
-from .account.controller.accounts import router as accounts_router
+from .account.controller.account import router as account_router
 
 from .auth.controller.register import router as register_router
 from .auth.controller.login import router as login_router
 from .auth.controller.user import router as user_router
 
 from .payment.controller.transaction import router as transaction_router
-from .payment.controller.account import router as account_router
 from .payment.controller.deposit import router as deposit_router
 
 from .cron_jobs import router as cron_jobs_router
@@ -22,6 +21,5 @@ def define_routes(app):
     add_router_to_app(app, account_router)
     add_router_to_app(app, deposit_router)
     add_router_to_app(app, transaction_router)
-    add_router_to_app(app, accounts_router)
     add_router_to_app(app, cron_jobs_router)
     

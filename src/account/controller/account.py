@@ -29,6 +29,17 @@ def show_account(account_id: str, session=Depends(get_session)):
     # return {"name":account.name,"amount":account.amount,"open_at":account.open_at,"is_main":account.is_main,}
 
 
+@router.post("/my-accounts")
+def get_accounts(user=Depends(get_user), session=Depends(get_session)):
+    accounts = session.exec(
+        select(Account)
+        .where(Account.user_id == UUID(user["id"]), Account.is_activated)
+        .order_by(Account.open_at.desc())
+    ).all()
+
+    return accounts
+
+
 # Ouvrir un compte bancaire
 @router.post("/account/open")
 def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
