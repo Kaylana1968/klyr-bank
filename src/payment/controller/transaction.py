@@ -29,7 +29,7 @@ def transaction(body: AddTransaction, user=Depends(get_user), session=Depends(ge
     if sender_account.amount < amount :
         return {"message": "You dont have enough money!"}
 
-    transaction = Transaction(sender_account_id=body.sender_account_id, receiver_account_id=body.receiver_account_id, amount=body.amount, status="SENT")
+    transaction = Transaction(sender_account_id=body.sender_account_id, receiver_account_id=body.receiver_account_id, amount=body.amount, status="PENDING")
     sender_account.amount -= amount
     receiver_account.amount += amount
 
@@ -39,6 +39,6 @@ def transaction(body: AddTransaction, user=Depends(get_user), session=Depends(ge
     session.commit()
     session.refresh(transaction)
     session.refresh(sender_account)    
-    session.refresh(receiver_account)    
+    session.refresh(receiver_account) 
 
     return {"message": "The transaction is done"}

@@ -43,20 +43,21 @@ def open_account(user=Depends(get_user), session=Depends(get_session)):
 # Fermer un compte bancaire  
 @router.put("/account/close/{account_id}")
 def close_account(account_id: str, session=Depends(get_session)):
+    return {"message": "Wsh bien ou quoi ?"}
     account: Account = session.exec(select(Account).where(Account.id == UUID(account_id))).first()
     transaction: Transaction = session.exec(select(Transaction).where(Transaction.sender_account_id == account_id , Transaction.receiver_account_id == account_id, Transaction.status == "PENDING")).first()
     return transaction
 
-    if account.is_main == True:
-        return {"message":"You can't close the main account"}
-    elif transaction.status == "PENDING":
-        return {"message":"You can't close the account because a transaction is pending"}
+    # if account.is_main == True:
+    #     return {"message":"You can't close the main account"}
+    # elif transaction.status == "PENDING":
+    #     return {"message":"You can't close the account because a transaction is pending"}
     
 
-    account.closed_at = datetime.datetime.now()
+    # account.closed_at = datetime.datetime.now()
 
-    session.add(account)
-    session.commit()
-    session.refresh(account)
+    # session.add(account)
+    # session.commit()
+    # session.refresh(account)
 
-    return {"message": "The account has been closed"}
+    # return {"message": "The account has been closed"}
