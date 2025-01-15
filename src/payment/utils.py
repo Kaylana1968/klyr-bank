@@ -1,5 +1,6 @@
 from database.models import Account, Transaction
 from sqlmodel import select
+from datetime import datetime, timedelta
 
 
 def limit_amount_transaction(session):
@@ -30,3 +31,27 @@ def limit_amount_transaction(session):
                 session.add(secondary_account)
                 session.add(main_account)
                 session.commit()
+                session.refresh(transaction)
+                session.refresh(secondary_account)
+                session.refresh(main_account)
+
+
+def update_transaction_status(session):
+    pending_transactions = session.exec(
+        select(Transaction).where(Transaction.status == "PENDING")
+    ).all()
+
+    for transaction in pending_transactions:
+        if datetime.utcnow() - timedelta(seconds=5) >= transaction.sent_at:
+            receiver_account = session.exec(
+                select(Account).where(Account.id == transaction.receiver_account_id)
+            ).first()
+
+            transaction.status = "RECEIVED"
+            receiver_account.amount += transaction.amount
+
+            session.add(transaction)
+            session.add(receiver_account)
+            session.commit()
+            session.refresh(transaction)
+            session.refresh(receiver_account)
