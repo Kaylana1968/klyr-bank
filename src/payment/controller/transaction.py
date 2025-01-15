@@ -112,4 +112,10 @@ def cancel_transaction (transaction_id: str, user=Depends(get_user), session=Dep
 
     else : 
         return {"message" : "The transaction is already received !"}
+    
+@router.post("/transaction/{transaction_id}")
+def get_transaction (transaction_id: str, user=Depends(get_user), session=Depends(get_session)) :
+    transaction = session.exec(select(Transaction).where(Transaction.id == UUID(transaction_id))).first()
+    return transaction
+
 
