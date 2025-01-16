@@ -7,9 +7,7 @@ from database.models import Account, Transaction
 from uuid import UUID
 import datetime
 
-
 router = APIRouter()
-
 
 # Show one account from user by account id
 @router.get("/account/{account_id}")
@@ -29,7 +27,7 @@ def show_account(account_id: str, session=Depends(get_session)):
 
 
 # Show all accounts from user with user token
-@router.post("/my-accounts")
+@router.get("/my-accounts")
 def get_accounts(user=Depends(get_user), session=Depends(get_session)):
     accounts = session.exec(
         select(Account)

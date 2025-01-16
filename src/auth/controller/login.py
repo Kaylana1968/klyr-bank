@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 # Log to an account with password and email
-@router.post("/login")
+@router.get("/login")
 def login(body: CreateUser, session=Depends(get_session)):
     user = session.exec(select(User).where(User.email == body.email)).first()
 
