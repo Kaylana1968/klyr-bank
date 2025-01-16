@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 from sqlalchemy import and_, or_
+from ..model.account import OpenAccount
 from src.auth.controller.utils import get_user
 from database.init import get_session
 from database.models import Account, Transaction
@@ -43,9 +44,11 @@ def get_accounts(user=Depends(get_user), session=Depends(get_session)):
 
 # Open bank account by user id
 @router.post("/open-account")
-def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
+def open_account(body: OpenAccount ,user=Depends(get_user), session=Depends(get_session)) -> Account:
 
-    account = Account(user_id=UUID(user["id"]), is_main=False)
+    name = body.name if body.name != "" else None
+
+    account = Account(user_id=UUID(user["id"]), is_main=False, name=name)
     session.add(account)
     session.commit()
     session.refresh(account)
