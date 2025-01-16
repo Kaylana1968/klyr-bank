@@ -128,7 +128,6 @@ def get_transaction(
     transaction = session.get(Transaction, UUID(transaction_id))
     user_id = UUID(user["id"])
 
-    # transaction = session.exec(select(Transaction).where(Transaction.id == UUID(transaction_id))).first()
     account: Account = (
         transaction.sender_account
         if transaction.sender_account.user_id == user_id
