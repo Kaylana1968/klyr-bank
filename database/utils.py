@@ -1,10 +1,25 @@
+from sqlmodel import Session, select
 from random import randint
+
+from .init import engine
 
 
 def iban_generator():
-    start = "FR7692649"
-    end = str(randint(0, 999_999_999_999_999_999))
+    from .models import Account
 
-    iban = start + (18 - len(end)) * "0" + end
+    with Session(engine) as session:
+        start = "FR7692649"
 
-    return iban
+        while True:
+            end = str(randint(0, 999_999_999_999_999_999))
+
+            iban = start + (18 - len(end)) * "0" + end
+
+            existingAccount = session.exec(
+                select(Account).where(Account.iban == iban)
+            ).first()
+
+            if existingAccount == None:
+                break
+
+        return iban
