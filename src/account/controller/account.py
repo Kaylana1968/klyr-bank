@@ -82,7 +82,7 @@ def close_account(
         )
     ).first()
 
-    if transaction == True and transaction.status == "PENDING":
+    if transaction != None and transaction.status == "PENDING":
         return {
             "message": "You can't close the account because a transaction is pending"
         }
