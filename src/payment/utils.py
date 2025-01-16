@@ -3,7 +3,8 @@ from sqlmodel import select
 from datetime import datetime, timedelta
 
 
-def limit_amount_transaction(session):
+# If amount of secondary bank account > 50 000 money is redirected to main account
+def limit_account_amount(session):
     secondary_accounts = session.exec(
         select(Account).where(Account.is_main == False)
     ).all()
@@ -36,6 +37,7 @@ def limit_amount_transaction(session):
                 session.refresh(main_account)
 
 
+# Set status to received if status is pending and five seconds
 def update_transaction_status(session):
     pending_transactions = session.exec(
         select(Transaction).where(Transaction.status == "PENDING")

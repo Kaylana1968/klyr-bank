@@ -9,11 +9,11 @@ from .payment.controller.deposit import router as deposit_router
 
 from .cron_jobs import router as cron_jobs_router
 
-
+# Add api to the route path
 def add_router_to_app(app, router):
     app.include_router(router, prefix="/api")
 
-
+# Add all routes from different files to path
 def define_routes(app):
     add_router_to_app(app, register_router)
     add_router_to_app(app, login_router)
@@ -22,4 +22,3 @@ def define_routes(app):
     add_router_to_app(app, deposit_router)
     add_router_to_app(app, transaction_router)
     add_router_to_app(app, cron_jobs_router)
-    

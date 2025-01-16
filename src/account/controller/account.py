@@ -11,7 +11,7 @@ import datetime
 router = APIRouter()
 
 
-# Récupérer les informations d'un compte bancaire
+# Show one account from user by account id
 @router.get("/account/{account_id}")
 def show_account(account_id: str, session=Depends(get_session)):
     account: Account = session.exec(
@@ -26,9 +26,9 @@ def show_account(account_id: str, session=Depends(get_session)):
 
     else:
         return account
-    # return {"name":account.name,"amount":account.amount,"open_at":account.open_at,"is_main":account.is_main,}
 
 
+# Show all accounts from user with user token
 @router.post("/my-accounts")
 def get_accounts(user=Depends(get_user), session=Depends(get_session)):
     accounts = session.exec(
@@ -40,8 +40,8 @@ def get_accounts(user=Depends(get_user), session=Depends(get_session)):
     return accounts
 
 
-# Ouvrir un compte bancaire
-@router.post("/account/open")
+# Open bank account by user id
+@router.post("/open-account")
 def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
     statement = select(Account).where(
         Account.user_id == UUID(user["id"]), Account.is_main
@@ -59,24 +59,42 @@ def open_account(user=Depends(get_user), session=Depends(get_session)) -> Accoun
     return {"message": "Le compte à bien été créer"}
 
 
-# Fermer un compte bancaire
-@router.put("/account/close/{account_id}")
-def close_account(account_id: str, user=Depends(get_user), session=Depends(get_session)):
+# Close bank account by account id
+@router.put("/close-account/{account_id}")
+def close_account(
+    account_id: str, user=Depends(get_user), session=Depends(get_session)
+):
 
-    account: Account = session.exec(select(Account).where(Account.id == UUID(account_id))).first()
+    account: Account = session.exec(
+        select(Account).where(Account.id == UUID(account_id))
+    ).first()
 
     if account.is_main == True:
-        return {"message":"You can't close the main account"}
-    
-    transaction: Transaction = session.exec(select(Transaction).where(or_(Transaction.sender_account_id == UUID(account_id) , Transaction.receiver_account_id == UUID(account_id), Transaction.status == "PENDING"))).first()
+        return {"message": "You can't close the main account"}
 
-    if transaction == True and transaction.status == "PENDING":
-        return {"message":"You can't close the account because a transaction is pending"}
-    
+    transaction: Transaction = session.exec(
+        select(Transaction).where(
+            or_(
+                Transaction.sender_account_id == UUID(account_id),
+                Transaction.receiver_account_id == UUID(account_id),
+                Transaction.status == "PENDING",
+            )
+        )
+    ).first()
+
+    if transaction != None and transaction.status == "PENDING":
+        return {
+            "message": "You can't close the account because a transaction is pending"
+        }
+
     mainAccount: Account = None
 
-    if account.amount > 0 :
-        mainAccount: Account = session.exec(select(Account).where(and_(Account.user_id == UUID(user["id"]), Account.closed_at == None ))).first()
+    if account.amount > 0:
+        mainAccount: Account = session.exec(
+            select(Account).where(
+                and_(Account.user_id == UUID(user["id"]), Account.closed_at == None)
+            )
+        ).first()
         if mainAccount == None:
             return {"message": "Not found your main account for transfer your amount"}
         mainAccount.amount += account.amount
@@ -91,6 +109,8 @@ def close_account(account_id: str, user=Depends(get_user), session=Depends(get_s
     session.commit()
     session.refresh(account)
 
-    if mainAccount :
-        return {"message": "The account has been closed and his amount has been transferred to your main account"}    
+    if mainAccount:
+        return {
+            "message": "The account has been closed and his amount has been transferred to your main account"
+        }
     return {"message": "The account has been closed"}

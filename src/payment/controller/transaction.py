@@ -9,6 +9,7 @@ from ..model.transaction import AddTransaction
 router = APIRouter()
 
 
+# Transfer money to another account with account id
 @router.post("/transaction")
 def transaction(
     body: AddTransaction, user=Depends(get_user), session=Depends(get_session)
@@ -55,6 +56,7 @@ def transaction(
     return {"message": "The transaction is done"}
 
 
+# Show all transactions and deposits from user by id
 @router.post("/my-transactions/{account_id}")
 def my_transactions(
     account_id: str, user=Depends(get_user), session=Depends(get_session)
@@ -64,40 +66,44 @@ def my_transactions(
     if str(account.user_id) != user["id"]:
         return {"message": "The account is not yours!"}
 
-    transactions = session.exec(
-        select(Transaction)
-        .where(
-            or_(
-                account.id == Transaction.sender_account_id,
-                account.id == Transaction.receiver_account_id,
-            )
-        )
-        .order_by(Transaction.sent_at.desc())
-    ).all()
+    transactions = account.sent_transactions + account.received_transactions
+    deposits = account.deposits
 
     toReturn = []
     for transaction in transactions:
-        # add a transactions response element with a sender if selected account is receiver
+        # add an element with a sender if selected account is receiver
         # and with a receiver if selected account is sender
         toReturn.append(
             {
                 "sender_account_id": transaction.sender_account_id,
                 "amount": transaction.amount,
-                "sent_at": transaction.sent_at,
+                "done_at": transaction.sent_at,
                 "status": transaction.status,
+                "is_deposit": False,
             }
             if transaction.sender_account_id != account.id
             else {
                 "receiver_account_id": transaction.receiver_account_id,
                 "amount": transaction.amount,
-                "sent_at": transaction.sent_at,
+                "done_at": transaction.sent_at,
                 "status": transaction.status,
+                "is_deposit": False,
             }
         )
 
-    return toReturn
+    for deposit in deposits:
+        toReturn.append(
+            {
+                "amount": deposit.amount,
+                "done_at": deposit.deposited_at,
+                "is_deposit": True,
+            }
+        )
+
+    return sorted(toReturn, key=lambda x: x["done_at"], reverse=True)
 
 
+# Cancel a pending transaction by id
 @router.post("/cancel-transaction/{transaction_id}")
 def cancel_transaction(
     transaction_id: str, user=Depends(get_user), session=Depends(get_session)
@@ -116,7 +122,6 @@ def cancel_transaction(
         session.refresh(transaction)
 
         return {"message": "The transaction has been canceled !"}
-
     else:
         return {"message": "The transaction is already received !"}
 
@@ -139,7 +144,7 @@ def get_transaction(
         )
     )
 
-    if not account :
+    if not account:
         return {"message": "It's not your transaction"}
-    
+
     return transaction

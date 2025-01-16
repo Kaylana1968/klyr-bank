@@ -9,7 +9,7 @@ from .utils import hash_password, generate_token
 
 router = APIRouter()
 
-
+# Register to an account by email and password
 @router.post("/register")
 def register(body: CreateUser, session=Depends(get_session)):
     user = User(email=body.email, password=hash_password(body.password))

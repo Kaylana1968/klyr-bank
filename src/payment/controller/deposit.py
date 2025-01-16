@@ -7,7 +7,7 @@ from ..model.deposit import AddDeposit
 
 router = APIRouter()
 
-
+# Add money in a bank account with account id
 @router.post("/deposit")
 def deposit(body: AddDeposit, user=Depends(get_user), session=Depends(get_session)):
     account = session.get(Account, body.account_id)
