@@ -22,4 +22,3 @@ def define_routes(app):
     add_router_to_app(app, deposit_router)
     add_router_to_app(app, transaction_router)
     add_router_to_app(app, cron_jobs_router)
-    

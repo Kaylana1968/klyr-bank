@@ -3,9 +3,11 @@ from uuid import UUID
 from datetime import datetime
 from typing import List
 
+
 class CreateUser(BaseModel):
     email: str
     password: str
+
 
 class UserData(BaseModel):
     email: str
