@@ -1,7 +1,6 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends
-from sqlmodel import select, or_
-
+from sqlmodel import select, or_, and_
 from database.init import get_session
 from database.models import Account, Transaction
 from src.auth.controller.utils import get_user
@@ -35,11 +34,16 @@ def transaction(
 
     if receiver_account.closed_at != None:
         return {"message": "Receiver account is closed"}
-    
+
     if sender_account.closed_at != None:
         return {"message": "Your account is closed"}
 
-    transaction = Transaction(sender_account_id=body.sender_account_id, receiver_account_id=body.receiver_account_id, amount=body.amount, status="PENDING")
+    transaction = Transaction(
+        sender_account_id=body.sender_account_id,
+        receiver_account_id=body.receiver_account_id,
+        amount=body.amount,
+        status="PENDING",
+    )
     sender_account.amount -= amount
 
     session.add(transaction)
@@ -93,14 +97,17 @@ def my_transactions(
 
     return toReturn
 
+
 @router.post("/cancel-transaction/{transaction_id}")
-def cancel_transaction (transaction_id: str, user=Depends(get_user), session=Depends(get_session)) : 
+def cancel_transaction(
+    transaction_id: str, user=Depends(get_user), session=Depends(get_session)
+):
     transaction = session.get(Transaction, UUID(transaction_id))
 
     if str(transaction.sender_account.user_id) != user["id"]:
         return {"message": "The account is not yours!"}
 
-    if transaction.status == "PENDING" : 
+    if transaction.status == "PENDING":
         transaction.status = "CANCELED"
         transaction.sender_account.amount += transaction.amount
 
@@ -108,14 +115,31 @@ def cancel_transaction (transaction_id: str, user=Depends(get_user), session=Dep
         session.commit()
         session.refresh(transaction)
 
-        return {"message" : "The transaction has been canceled !"}
+        return {"message": "The transaction has been canceled !"}
 
-    else : 
-        return {"message" : "The transaction is already received !"}
-    
+    else:
+        return {"message": "The transaction is already received !"}
+
+
 @router.post("/transaction/{transaction_id}")
-def get_transaction (transaction_id: str, user=Depends(get_user), session=Depends(get_session)) :
-    transaction = session.exec(select(Transaction).where(Transaction.id == UUID(transaction_id))).first()
+def get_transaction(
+    transaction_id: str, user=Depends(get_user), session=Depends(get_session)
+):
+    transaction = session.get(Transaction, UUID(transaction_id))
+    user_id = UUID(user["id"])
+
+    # transaction = session.exec(select(Transaction).where(Transaction.id == UUID(transaction_id))).first()
+    account: Account = (
+        transaction.sender_account
+        if transaction.sender_account.user_id == user_id
+        else (
+            transaction.receiver_account
+            if transaction.receiver_account.user_id == user_id
+            else None
+        )
+    )
+
+    if not account :
+        return {"message": "It's not your transaction"}
+    
     return transaction
-
-

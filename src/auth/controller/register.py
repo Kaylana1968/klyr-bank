@@ -20,7 +20,6 @@ def register(body: CreateUser, session=Depends(get_session)):
 
     currentUser = session.exec(select(User).where(User.email == body.email)).first()
     
-    
     account = Account(
         user_id=currentUser.id, is_activated=True, amount=100, is_main=True
     )
