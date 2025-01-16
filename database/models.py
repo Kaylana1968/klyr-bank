@@ -19,7 +19,7 @@ class Account(SQLModel, table=True):
     user_id: UUID = Field(index=True, foreign_key="user.id")
     name: Optional[str] = Field()
     is_activated: bool = Field(default=True)
-    amount: float = Field()
+    amount: float = Field(default=0)
     open_at: datetime = Field(default_factory=datetime.utcnow)
     is_main: bool = Field()
     closed_at: Optional[datetime] = Field()

@@ -21,7 +21,7 @@ def show_account(account_id: str, session=Depends(get_session)):
     if account == None:
         return {"message": "Account not found"}
 
-    elif account.closed_at != None:
+    elif account.is_activated == False:
         return {"message": "Account closed since " + str(account.closed_at)}
 
     else:
@@ -43,14 +43,9 @@ def get_accounts(user=Depends(get_user), session=Depends(get_session)):
 # Ouvrir un compte bancaire
 @router.post("/account/open")
 def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
-    statement = select(Account).where(
-        Account.user_id == UUID(user["id"]), Account.is_main
-    )
-    existing_main_account = session.exec(statement).first()
 
-    is_main_verif = existing_main_account is None
     account = Account(
-        user_id=UUID(user["id"]), is_activated=True, amount=0, is_main=is_main_verif
+        user_id=UUID(user["id"]), is_main=False
     )
     session.add(account)
     session.commit()
@@ -63,7 +58,7 @@ def open_account(user=Depends(get_user), session=Depends(get_session)) -> Accoun
 @router.put("/account/close/{account_id}")
 def close_account(account_id: str, user=Depends(get_user), session=Depends(get_session)):
 
-    account: Account = session.exec(select(Account).where(Account.id == UUID(account_id))).first()
+    account: Account = session.get(Account, UUID(account_id))
 
     if account.is_main == True:
         return {"message":"You can't close the main account"}
@@ -86,6 +81,7 @@ def close_account(account_id: str, user=Depends(get_user), session=Depends(get_s
         session.refresh(mainAccount)
 
     account.closed_at = datetime.datetime.now()
+    account.is_activated = False
 
     session.add(account)
     session.commit()
