@@ -10,6 +10,7 @@ from ..model.transaction import AddTransaction
 router = APIRouter()
 
 
+# Transfer money to another account with account id 
 @router.post("/transaction")
 def transaction(
     body: AddTransaction, user=Depends(get_user), session=Depends(get_session)
@@ -55,7 +56,7 @@ def transaction(
 
     return {"message": "The transaction is done"}
 
-
+# Show all transactions and deposits from user by id 
 @router.post("/my-transactions/{account_id}")
 def my_transactions(
     account_id: str, user=Depends(get_user), session=Depends(get_session)
@@ -70,7 +71,7 @@ def my_transactions(
 
     toReturn = []
     for transaction in transactions:
-        # add a transactions response element with a sender if selected account is receiver
+        # add an element with a sender if selected account is receiver
         # and with a receiver if selected account is sender
         toReturn.append(
             {
@@ -101,7 +102,7 @@ def my_transactions(
 
     return sorted(toReturn, key=lambda x: x["done_at"], reverse=True)
 
-
+# Cancel a pending transaction by id
 @router.post("/cancel-transaction/{transaction_id}")
 def cancel_transaction(
     transaction_id: str, user=Depends(get_user), session=Depends(get_session)

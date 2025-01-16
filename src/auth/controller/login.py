@@ -9,6 +9,7 @@ from .utils import verify_password, generate_token
 router = APIRouter()
 
 
+# Log to an account with password and email
 @router.post("/login")
 def login(body: CreateUser, session=Depends(get_session)):
     user = session.exec(select(User).where(User.email == body.email)).first()

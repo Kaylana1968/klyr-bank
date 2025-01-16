@@ -11,7 +11,7 @@ import datetime
 router = APIRouter()
 
 
-# Récupérer les informations d'un compte bancaire
+# Show one account from user by account id
 @router.get("/account/{account_id}")
 def show_account(account_id: str, session=Depends(get_session)):
     account: Account = session.exec(
@@ -26,9 +26,9 @@ def show_account(account_id: str, session=Depends(get_session)):
 
     else:
         return account
-    # return {"name":account.name,"amount":account.amount,"open_at":account.open_at,"is_main":account.is_main,}
 
 
+# Show all accounts from user with user token
 @router.post("/my-accounts")
 def get_accounts(user=Depends(get_user), session=Depends(get_session)):
     accounts = session.exec(
@@ -40,8 +40,8 @@ def get_accounts(user=Depends(get_user), session=Depends(get_session)):
     return accounts
 
 
-# Ouvrir un compte bancaire
-@router.post("/account/open")
+# Open bank account by user id
+@router.post("/open-account")
 def open_account(user=Depends(get_user), session=Depends(get_session)) -> Account:
     statement = select(Account).where(
         Account.user_id == UUID(user["id"]), Account.is_main
@@ -59,8 +59,8 @@ def open_account(user=Depends(get_user), session=Depends(get_session)) -> Accoun
     return {"message": "Le compte à bien été créer"}
 
 
-# Fermer un compte bancaire
-@router.put("/account/close/{account_id}")
+# Close bank account by account id
+@router.put("/close-account/{account_id}")
 def close_account(
     account_id: str, user=Depends(get_user), session=Depends(get_session)
 ):
