@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select, or_, and_
 from database.init import get_session
 from database.models import Account, Transaction
@@ -19,25 +19,33 @@ def transaction(
     amount = body.amount
 
     if amount <= 0:
-        return {"message": "can't send negative money"}
+        raise HTTPException(
+            status_code=400, detail="You cannot send a negative amount of money."
+        )
 
-    if str(sender_account.user_id) != user["id"]:
-        return {"message": "The account is not yours!"}
+    if str(sender_account.user_id) != user.get("id"):
+        raise HTTPException(
+            status_code=403, detail="The account does not belong to you."
+        )
 
-    if receiver_account == None:
-        return {"message": "Receiver does not exist!"}
+    if receiver_account is None:
+        raise HTTPException(status_code=404, detail="Receiver account does not exist.")
 
     if sender_account == receiver_account:
-        return {"message": "Can t send to the same account!"}
+        raise HTTPException(
+            status_code=400, detail="You cannot send money to the same account."
+        )
 
     if sender_account.amount < amount:
-        return {"message": "You dont have enough money!"}
+        raise HTTPException(
+            status_code=400, detail="Insufficient funds in your account."
+        )
 
-    if receiver_account.closed_at != None:
-        return {"message": "Receiver account is closed"}
+    if receiver_account.closed_at is not None:
+        raise HTTPException(status_code=400, detail="The receiver's account is closed.")
 
-    if sender_account.closed_at != None:
-        return {"message": "Your account is closed"}
+    if sender_account.closed_at is not None:
+        raise HTTPException(status_code=400, detail="Your account is closed.")
 
     transaction = Transaction(
         sender_account_id=body.sender_account_id,
@@ -53,7 +61,7 @@ def transaction(
     session.refresh(transaction)
     session.refresh(sender_account)
 
-    return {"message": "The transaction is done"}
+    raise HTTPException(status_code=200, detail="The transaction is done")
 
 
 # Show all transactions and deposits from user by id
@@ -64,7 +72,7 @@ def my_transactions(
     account = session.get(Account, UUID(account_id))
 
     if str(account.user_id) != user["id"]:
-        return {"message": "The account is not yours!"}
+        raise HTTPException(status_code=403, detail="The account is not yours!")
 
     transactions = account.sent_transactions + account.received_transactions
     deposits = account.deposits
@@ -111,7 +119,7 @@ def cancel_transaction(
     transaction = session.get(Transaction, UUID(transaction_id))
 
     if str(transaction.sender_account.user_id) != user["id"]:
-        return {"message": "The account is not yours!"}
+        raise HTTPException(status_code=403, detail="The account is not yours!")
 
     if transaction.status == "PENDING":
         transaction.status = "CANCELED"
@@ -121,9 +129,13 @@ def cancel_transaction(
         session.commit()
         session.refresh(transaction)
 
-        return {"message": "The transaction has been canceled !"}
+        raise HTTPException(
+            status_code=200, detail="The transaction has been canceled !"
+        )
     else:
-        return {"message": "The transaction is already received !"}
+        raise HTTPException(
+            status_code=200, detail="The transaction is already received"
+        )
 
 
 @router.get("/transaction/{transaction_id}")
@@ -144,6 +156,6 @@ def get_transaction(
     )
 
     if not account:
-        return {"message": "It's not your transaction"}
+        raise HTTPException(status_code=403, detail="It's not your transaction")
 
     return transaction

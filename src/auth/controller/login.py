@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 
 from database.init import get_session
@@ -15,9 +15,9 @@ def login(body: CreateUser, session=Depends(get_session)):
     user = session.exec(select(User).where(User.email == body.email)).first()
 
     if user == None:
-        return {"message": "User not found"}
+        raise HTTPException(status_code=404, detail="User not found")
 
     if not verify_password(password=body.password, hashed_password=user.password):
-        return {"message": "Password mismatch"}
+        raise HTTPException(status_code=400, detail="Password mismatch")
 
-    return {"token": generate_token(user)}
+    return generate_token(user)

@@ -8,7 +8,8 @@ from ..model.user import UserData
 
 router = APIRouter()
 
-# Show user who s logged in 
+
+# Show user who s logged in
 @router.get("/me")
 def me(user=Depends(get_user), session=Depends(get_session)):
     user_data = session.get(User, UUID(user["id"]))

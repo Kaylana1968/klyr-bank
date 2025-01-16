@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 from sqlalchemy import and_, or_
 from src.auth.controller.utils import get_user
@@ -9,6 +9,7 @@ import datetime
 
 router = APIRouter()
 
+
 # Show one account from user by account id
 @router.get("/account/{account_id}")
 def show_account(account_id: str, session=Depends(get_session)):
@@ -17,10 +18,12 @@ def show_account(account_id: str, session=Depends(get_session)):
     ).first()
 
     if account == None:
-        return {"message": "Account not found"}
+        raise HTTPException(status_code=404, detail="Account not found")
 
     elif account.is_activated == False:
-        return {"message": "Account closed since " + str(account.closed_at)}
+        raise HTTPException(
+            status_code=403, detail="Account closed since " + str(account.closed_at)
+        )
 
     else:
         return account
@@ -47,7 +50,7 @@ def open_account(user=Depends(get_user), session=Depends(get_session)) -> Accoun
     session.commit()
     session.refresh(account)
 
-    return {"message": "Le compte à bien été créer"}
+    raise HTTPException(status_code=200, detail="Le compte à bien été créer")
 
 
 # Close bank account by account id
@@ -58,33 +61,33 @@ def close_account(
     account: Account = session.get(Account, UUID(account_id))
 
     if account.is_main == True:
-        return {"message": "You can't close the main account"}
+        raise HTTPException(status_code=403, detail="You can't close the main account")
 
     transaction: Transaction = session.exec(
         select(Transaction).where(
             or_(
-                Transaction.sender_account_id == UUID(account_id),
-                Transaction.receiver_account_id == UUID(account_id),
+                Transaction.sender_account_id == account.id,
+                Transaction.receiver_account_id == account.id,
                 Transaction.status == "PENDING",
             )
         )
     ).first()
 
     if transaction != None and transaction.status == "PENDING":
-        return {
-            "message": "You can't close the account because a transaction is pending"
-        }
+        raise HTTPException(
+            status_code=403,
+            detail="You can't close the account because a transaction is pending",
+        )
 
     mainAccount: Account = None
 
     if account.amount > 0:
         mainAccount: Account = session.exec(
             select(Account).where(
-                and_(Account.user_id == UUID(user["id"]), Account.closed_at == None)
+                and_(Account.user_id == UUID(user["id"]), Account.is_main == True)
             )
         ).first()
-        if mainAccount == None:
-            return {"message": "Not found your main account for transfer your amount"}
+
         mainAccount.amount += account.amount
         account.amount = 0
         session.add(mainAccount)
@@ -98,8 +101,4 @@ def close_account(
     session.commit()
     session.refresh(account)
 
-    if mainAccount:
-        return {
-            "message": "The account has been closed and his amount has been transferred to your main account"
-        }
-    return {"message": "The account has been closed"}
+    raise HTTPException(status_code=403, detail="The account has been closed")

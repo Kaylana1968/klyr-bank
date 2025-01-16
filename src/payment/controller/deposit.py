@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from database.init import get_session
 from database.models import Account, Deposit
@@ -7,6 +7,7 @@ from ..model.deposit import AddDeposit
 
 router = APIRouter()
 
+
 # Add money in a bank account with account id
 @router.post("/deposit")
 def deposit(body: AddDeposit, user=Depends(get_user), session=Depends(get_session)):
@@ -14,10 +15,10 @@ def deposit(body: AddDeposit, user=Depends(get_user), session=Depends(get_sessio
     amount = body.amount
 
     if amount <= 0:
-        return {"message": "can't deposit negative money"}
+        raise HTTPException(status_code=400, detail="can't deposit negative money")
 
     if str(account.user_id) != user["id"]:
-        return {"message": "The account is not yours!"}
+        raise HTTPException(status_code=403, detail="The account is not yours!")
 
     deposit = Deposit(account_id=account.id, amount=body.amount)
     account.amount += amount
@@ -28,4 +29,4 @@ def deposit(body: AddDeposit, user=Depends(get_user), session=Depends(get_sessio
     session.refresh(deposit)
     session.refresh(account)
 
-    return {"message": "The deposit is done"}
+    raise HTTPException(status_code=200, detail="The deposit is done")
