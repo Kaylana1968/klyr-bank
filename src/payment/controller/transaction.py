@@ -41,10 +41,10 @@ def transaction(
             status_code=400, detail="Insufficient funds in your account."
         )
 
-    if receiver_account.closed_at is not None:
+    if receiver_account.is_activated == False:
         raise HTTPException(status_code=400, detail="The receiver's account is closed.")
 
-    if sender_account.closed_at is not None:
+    if sender_account.is_activated == False:
         raise HTTPException(status_code=400, detail="Your account is closed.")
 
     transaction = Transaction(

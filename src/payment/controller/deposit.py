@@ -20,6 +20,9 @@ def deposit(body: AddDeposit, user=Depends(get_user), session=Depends(get_sessio
     if str(account.user_id) != user["id"]:
         raise HTTPException(status_code=403, detail="The account is not yours!")
 
+    if account.is_activated == False:
+        raise HTTPException(status_code=400, detail="Your account is closed.")
+
     deposit = Deposit(account_id=account.id, amount=body.amount)
     account.amount += amount
 

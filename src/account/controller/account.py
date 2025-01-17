@@ -13,10 +13,13 @@ router = APIRouter()
 
 # Show one account from user by account id
 @router.get("/account/{account_id}")
-def show_account(account_id: str, session=Depends(get_session)):
+def show_account(account_id: str, session=Depends(get_session), user=Depends(get_user)):
     account: Account = session.exec(
         select(Account).where(Account.id == UUID(account_id))
     ).first()
+
+    if account.user_id != UUID(user["id"]) :
+        raise HTTPException (status_code=403, detail = "It s not your account!")
 
     if account == None:
         raise HTTPException(status_code=404, detail="Account not found")
