@@ -145,17 +145,10 @@ def get_transaction(
     transaction = session.get(Transaction, UUID(transaction_id))
     user_id = UUID(user["id"])
 
-    account: Account = (
-        transaction.sender_account
-        if transaction.sender_account.user_id == user_id
-        else (
-            transaction.receiver_account
-            if transaction.receiver_account.user_id == user_id
-            else None
-        )
-    )
+    if (
+        transaction.sender_account.user_id == user_id
+        or transaction.receiver_account.user_id == user_id
+    ):
+        return transaction
 
-    if not account:
-        raise HTTPException(status_code=403, detail="It's not your transaction")
-
-    return transaction
+    raise HTTPException(status_code=403, detail="It's not your transaction")
