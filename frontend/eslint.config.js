@@ -6,7 +6,6 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tailwind from "eslint-plugin-tailwindcss";
 
 export default [
-  ...tailwind.configs["flat/recommended"],
   { ignores: ['dist'] },
   {
     files: ['**/*.{js,jsx}'],
@@ -21,11 +20,13 @@ export default [
     },
     settings: { react: { version: '18.3' } },
     plugins: {
+      tailwind,
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
     },
     rules: {
+      ...tailwind.configs["flat/recommended"].rules,
       ...js.configs.recommended.rules,
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
