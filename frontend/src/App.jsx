@@ -1,7 +1,8 @@
-import { useEffect } from "react";
-import "./index.css";
+import {BrowserRouter, Routes, Route, Link} from "react-router"
+import RegisterPage from "./pages/RegisterPage";
+import React, {useEffect} from "react";
 
-export default function App() {
+function App() {
 	useEffect(() => {
 		fetch("http://127.0.0.1:8000/api", {
 			method: "GET"
@@ -11,8 +12,15 @@ export default function App() {
 	}, []);
 
 	return (
-		<div className="m-4">
-			<h1>Hello, Vite and React!</h1>
-		</div>
+		<BrowserRouter>
+			<nav>
+				<Link to="/register">Register</Link>
+			</nav>
+			<Routes>
+				<Route path="/register" element={<RegisterPage/>} />
+			</Routes>
+		</BrowserRouter>
 	);
 }
+
+export default App
