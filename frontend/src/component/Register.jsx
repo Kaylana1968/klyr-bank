@@ -1,30 +1,33 @@
-import { useState } from "react";
+import { useFormik } from "formik";
 import { RegisterAPI } from "../API/RegisterAPI";
 
 function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+	const { values, handleChange, handleSubmit } = useFormik({
+		initialValues: {
+			email: "",
+			password: ""
+		},
+		onSubmit: ({ email, password }) => RegisterAPI(email, password)
+	});
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    RegisterAPI(email, password);
-  }
+	return (
+		<form onSubmit={handleSubmit}>
+			<input
+				name="email"
+				type="email"
+				value={values.email}
+				onChange={handleChange}
+			/>
+			<input
+				name="password"
+				type="password"
+				value={values.password}
+				onChange={handleChange}
+			/>
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={({ target }) => setEmail(target.value)}
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={({ target }) => setPassword(target.value)}
-      />
-      <button type="submit">créer un compte</button>
-    </form>
-  );
+			<button type="submit">créer un compte</button>
+		</form>
+	);
 }
 
 export default Register;
