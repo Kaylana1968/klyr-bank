@@ -66,9 +66,7 @@ def transaction(
 
 # Show all transactions and deposits from user by id
 @router.get("/my-transactions/{account_id}")
-def my_transactions(
-    account_id: str, user=Depends(get_user), session=Depends(get_session)
-):
+def my_transactions( account_id: str, user=Depends(get_user), session=Depends(get_session)):
     account = session.get(Account, UUID(account_id))
 
     if str(account.user_id) != user["id"]:

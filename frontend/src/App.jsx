@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
-
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-
 import { SessionContextProvider } from "./sessionContext.jsx";
+import TransactionsPage from "./pages/TransactionsPage.jsx";
 import Header from "./component/header.jsx";
 import MyAccountsPage from "./pages/MyAccountsPage.jsx";
+
 
 function App() {
 	useEffect(() => {
@@ -20,12 +20,16 @@ function App() {
 	return (
 		<SessionContextProvider>
 			<BrowserRouter>
-				<Header />
-
+				<nav>
+					<Link to="/register">Register</Link>
+					<Link to="/login">Login</Link>
+					<Link to="/transactions">My transactions</Link>
+				</nav>
 				<Routes>
 					<Route path="/register" element={<RegisterPage />} />
 					<Route path="/login" element={<LoginPage />} />
-					<Route path="/my-accounts" element={<MyAccountsPage />} />
+					<Route path="/transactions/:account_id" element={<TransactionsPage />} />
+
 				</Routes>
 			</BrowserRouter>
 		</SessionContextProvider>
