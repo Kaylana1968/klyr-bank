@@ -8,6 +8,5 @@ export default function MyAccountsAPI(setAccounts) {
       Authorization: `Bearer ${getToken()}`,
     },
   })
-    .then((res) => res.json())
-    .then((res) => setAccounts(res));
+    .then((res) => res.json());
 }

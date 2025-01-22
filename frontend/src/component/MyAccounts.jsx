@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
-import MyAccountsAPI from "../API/MyAccountsAPI";
 import { Link } from "react-router";
 import { deleteAccountAPI } from "../API/DeleteAccountAPI";
+import useSWR from "swr";
+import { GETfetcher } from "../constants/fetcher";
+import { Fragment } from "react";
 
 export default function MyAccounts() {
-  const [accounts, setAccounts] = useState();
+  const { data: accounts, isLoading } = useSWR(
+    "http://127.0.0.1:8000/api/my-accounts",
+    GETfetcher
+  );
 
-  useEffect(() => {
-    MyAccountsAPI(setAccounts);
-  }, []);
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div>
       {accounts &&
         accounts.map((account, index) => (
-          <>
+          <Fragment key={account.iban}>
             {index === 0 && <hr className="my-3" />}
             <div className="flex justify-between">
-              <Link key={account.iban}>
+              <Link>
                 <div>{account.name}</div>
                 <div>{account.amount}</div>
                 <div>{account.iban}</div>
@@ -34,7 +36,7 @@ export default function MyAccounts() {
               )}
             </div>
             <hr className="my-3" />
-          </>
+          </Fragment>
         ))}
     </div>
   );
