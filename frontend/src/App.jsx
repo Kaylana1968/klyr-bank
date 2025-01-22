@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 
 import { SessionContextProvider } from "./sessionContext.jsx";
+import TransactionsPage from "./pages/TransactionsPage.jsx";
 
 function App() {
 	useEffect(() => {
@@ -21,10 +22,12 @@ function App() {
 				<nav>
 					<Link to="/register">Register</Link>
 					<Link to="/login">Login</Link>
+					<Link to="/transactions">My transactions</Link>
 				</nav>
 				<Routes>
 					<Route path="/register" element={<RegisterPage />} />
 					<Route path="/login" element={<LoginPage />} />
+					<Route path="/transactions/:account_id" element={<TransactionsPage />} />
 				</Routes>
 			</BrowserRouter>
 		</SessionContextProvider>
