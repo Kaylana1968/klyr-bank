@@ -1,27 +1,31 @@
-import { useState } from "react";
+import { useFormik } from "formik";
+
 import { LoginAPI } from "../API/LoginAPI";
 
 function Login() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-
-	function handleSubmit(e) {
-		e.preventDefault();
-		LoginAPI(email, password);
-	}
+	const { values, handleChange, handleSubmit } = useFormik({
+		initialValues: {
+			email: "",
+			password: ""
+		},
+		onSubmit: ({ email, password }) => LoginAPI(email, password)
+	});
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<input
+				name="email"
 				type="email"
-				value={email}
-				onChange={({ target }) => setEmail(target.value)}
+				value={values.email}
+				onChange={handleChange}
 			/>
 			<input
+				name="password"
 				type="password"
-				value={password}
-				onChange={({ target }) => setPassword(target.value)}
+				value={values.password}
+				onChange={handleChange}
 			/>
+
 			<button type="submit">Se connecter</button>
 		</form>
 	);
