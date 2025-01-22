@@ -1,6 +1,7 @@
+import { mutate } from "swr";
 import { getToken } from "../auth";
 
-export function deleteAccountAPI(accountId) {
+export function deleteAccountAPI(accountId, setError) {
   fetch(`http://127.0.0.1:8000/api/close-account/${accountId}`, {
     method: "PUT",
     headers: {
@@ -9,5 +10,9 @@ export function deleteAccountAPI(accountId) {
     } 
   })
     .then(res => res.json())
-    .then(res => console.log(res));
+    .then(res => {
+      console.log(res);
+      mutate("http://127.0.0.1:8000/api/my-accounts");
+    })
+    .catch(error => setError(error));
 }
