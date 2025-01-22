@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router";
+import "./index.css";
 
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
