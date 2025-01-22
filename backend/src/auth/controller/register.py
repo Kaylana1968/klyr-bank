@@ -16,7 +16,7 @@ def register(body: CreateUser, session=Depends(get_session)):
         raise HTTPException(status_code=404, detail="Email already exist!")
 
     user: User = User(email=body.email, password=hash_password(body.password))
-    account: Account = Account(user_id=user.id, amount=100, is_main=True)
+    account: Account = Account(user_id=user.id, amount=100, is_main=True, name="Main account", type="Current account")
     deposit: Deposit = Deposit(account_id=account.id, amount=100)
     
     session.add(user)

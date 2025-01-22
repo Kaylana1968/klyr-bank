@@ -18,8 +18,8 @@ def show_account(account_id: str, session=Depends(get_session), user=Depends(get
         select(Account).where(Account.id == UUID(account_id))
     ).first()
 
-    if account.user_id != UUID(user["id"]) :
-        raise HTTPException (status_code=403, detail = "It s not your account!")
+    if account.user_id != UUID(user["id"]):
+        raise HTTPException(status_code=403, detail="It s not your account!")
 
     if account == None:
         raise HTTPException(status_code=404, detail="Account not found")
@@ -47,16 +47,18 @@ def get_accounts(user=Depends(get_user), session=Depends(get_session)):
 
 # Open bank account by user id
 @router.post("/open-account")
-def open_account(body: OpenAccount ,user=Depends(get_user), session=Depends(get_session)) -> Account:
+def open_account(
+    body: OpenAccount, user=Depends(get_user), session=Depends(get_session)
+):
 
     name = body.name if body.name != "" else None
 
-    account = Account(user_id=UUID(user["id"]), is_main=False, name=name)
+    account = Account(user_id=UUID(user["id"]), is_main=False, name=name, type=body.type)
     session.add(account)
     session.commit()
     session.refresh(account)
 
-    raise HTTPException(status_code=200, detail="Le compte à bien été créer")
+    raise HTTPException(status_code=200, detail="Le compte à bien été créé")
 
 
 # Close bank account by account id

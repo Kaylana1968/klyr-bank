@@ -3,22 +3,26 @@ import MyAccountsAPI from "../API/MyAccountsAPI";
 import { Link } from "react-router";
 
 export default function MyAccounts() {
-  const [accounts, setAccounts] = useState();
+	const [accounts, setAccounts] = useState();
 
-  useEffect(() => {
-    MyAccountsAPI(setAccounts);
-  }, []);
+	useEffect(() => {
+		MyAccountsAPI(setAccounts);
+	}, []);
 
-  return (
-    <div>
-      {accounts &&
-        accounts.map((account) => (
-          <Link key={account.iban}>
-            <div>{account.name}</div>
-            <div>{account.amount}</div>
-            <div>{account.iban}</div>
-          </Link>
-        ))}
-    </div>
-  );
+	return (
+		<div>
+			{accounts &&
+				accounts.map((account, index) => (
+					<>
+						{index === 0 && <hr className="my-3" />}
+						<Link key={account.iban}>
+							<div>{account.name}</div>
+							<div>{account.amount}</div>
+							<div>{account.iban}</div>
+						</Link>
+						<hr className="my-3" />
+					</>
+				))}
+		</div>
+	);
 }
