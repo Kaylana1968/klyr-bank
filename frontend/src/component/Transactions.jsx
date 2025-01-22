@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { TransactionsAPI } from "../API/TransactionsAPI";
 import { useFormik } from "formik";
@@ -77,8 +77,8 @@ function Transactions() {
 
         <h1 className="py-2">Mes virements et dépôts :</h1>
 
-        {filteredTransactions.map((transaction) => (
-          <>
+        {filteredTransactions.map((transaction, index) => (
+          <Fragment key={index}>
             <hr />
             <div className="py-4">
               {(transaction.status != null && (
@@ -93,7 +93,7 @@ function Transactions() {
                 <p>Status : {transaction.status}</p>
               )}
             </div>
-          </>
+          </Fragment>
         ))}
       </div>
     </>
