@@ -97,7 +97,7 @@ def send_withdrawal(session):
                 continue
 
         if withdrawal.sender_account.amount - withdrawal.amount < 0:
-            pass
+            continue
 
         transaction = Transaction(
             sender_account_id=withdrawal.sender_account_id,
@@ -106,8 +106,16 @@ def send_withdrawal(session):
             status="RECEIVED",
         )
 
+
+        session.add(transaction)
+        session.commit()
+        session.refresh(transaction)
+
         transaction.sender_account.amount -= transaction.amount
         transaction.receiver_account.amount += transaction.amount
 
+        withdrawal.last_sent_at = today
+
         session.add(transaction)
+        session.add(withdrawal)
         session.commit()
