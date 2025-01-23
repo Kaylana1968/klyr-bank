@@ -60,6 +60,11 @@ def add_beneficiary(
     if beneficiary_account == None:
         raise HTTPException(status_code=404, detail="Account not found")
 
+    if beneficiary_account.id == account.id:
+        raise HTTPException(
+            status_code=400, detail="You can't add yourself as beneficiary"
+        )
+
     existingBeneficiary: Beneficiary = session.exec(
         select(Beneficiary).where(
             Beneficiary.account_id == account.id,
