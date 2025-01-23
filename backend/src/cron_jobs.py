@@ -3,7 +3,7 @@ from fastapi_utilities import repeat_every
 from sqlmodel import Session
 
 from database.init import engine
-from .payment.utils import limit_account_amount, update_transaction_status
+from .payment.utils import limit_account_amount, update_transaction_status, send_withdrawal
 
 router = APIRouter()
 
@@ -20,3 +20,10 @@ async def limit_account_amount_cron_job():
 async def update_transaction_status_cron_job():
     with Session(engine) as session:
         update_transaction_status(session)
+
+# Repeat every second update of transactions status
+@router.on_event("startup")
+@repeat_every(seconds=1)
+async def send_withdrawal_cron_job():
+    with Session(engine) as session:
+        send_withdrawal(session)

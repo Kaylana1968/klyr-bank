@@ -7,6 +7,7 @@ from .auth.controller.user import router as user_router
 
 from .payment.controller.transaction import router as transaction_router
 from .payment.controller.deposit import router as deposit_router
+from .payment.controller.withdrawal import router as withdrawal_router
 
 from .cron_jobs import router as cron_jobs_router
 
@@ -23,4 +24,5 @@ def define_routes(app):
     add_router_to_app(app, beneficiary_router)
     add_router_to_app(app, deposit_router)
     add_router_to_app(app, transaction_router)
+    add_router_to_app(app, withdrawal_router)
     add_router_to_app(app, cron_jobs_router)
