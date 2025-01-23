@@ -14,3 +14,8 @@ class UserData(BaseModel):
     id: UUID
     created_at: datetime
     accounts: List
+
+class ChangePassword(BaseModel):
+    password : str
+    new_password: str
+    confirm_new_password: str
