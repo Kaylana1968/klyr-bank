@@ -1,4 +1,5 @@
 from .account.controller.account import router as account_router
+from .account.controller.beneficiary import router as beneficiary_router
 
 from .auth.controller.register import router as register_router
 from .auth.controller.login import router as login_router
@@ -19,6 +20,7 @@ def define_routes(app):
     add_router_to_app(app, login_router)
     add_router_to_app(app, user_router)
     add_router_to_app(app, account_router)
+    add_router_to_app(app, beneficiary_router)
     add_router_to_app(app, deposit_router)
     add_router_to_app(app, transaction_router)
     add_router_to_app(app, cron_jobs_router)

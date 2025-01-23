@@ -12,6 +12,8 @@ export default function MyAccounts() {
 		GETfetcher
 	);
 
+	console.log(accounts)
+
 	if (isLoading) return <div>Loading...</div>;
 
 	return (
@@ -19,14 +21,18 @@ export default function MyAccounts() {
 			<div>
 				{accounts &&
 					accounts.map((account, index) => (
-						<Fragment key={account.iban}>
+						<Fragment key={index}>
 							{index === 0 && <hr className="my-3" />}
 							<div className="flex justify-between">
-								<Link to={"/transactions/" + account.id}>
+								<div>
 									<div>{account.name}</div>
 									<div>{account.amount}</div>
 									<div>{account.iban}</div>
-								</Link>
+								</div>
+
+								<Link to={"/transactions/" + account.id}>Transactions</Link>
+
+								<Link to={"/beneficiaries/" + account.id}>Benefiaciaries</Link>
 
 								{!account.is_main && (
 									<button

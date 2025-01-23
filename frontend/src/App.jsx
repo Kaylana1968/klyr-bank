@@ -6,6 +6,7 @@ import { SessionContextProvider } from "./sessionContext.jsx";
 import TransactionsPage from "./pages/TransactionsPage.jsx";
 import Header from "./component/header.jsx";
 import MyAccountsPage from "./pages/MyAccountsPage.jsx";
+import BeneficiariesPage from "./pages/BeneficiariesPage.jsx";
 
 function App() {
   useEffect(() => {
@@ -28,6 +29,10 @@ function App() {
           <Route
             path="/transactions/:account_id"
             element={<TransactionsPage />}
+          />
+          <Route
+            path="/beneficiaries/:account_id"
+            element={<BeneficiariesPage />}
           />
         </Routes>
       </BrowserRouter>
