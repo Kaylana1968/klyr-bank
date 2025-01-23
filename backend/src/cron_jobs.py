@@ -23,7 +23,7 @@ async def update_transaction_status_cron_job():
 
 # Repeat every second update of transactions status
 @router.on_event("startup")
-@repeat_every(seconds=1)
+@repeat_every(seconds=10)
 async def send_withdrawal_cron_job():
     with Session(engine) as session:
         send_withdrawal(session)
