@@ -19,11 +19,15 @@ export default function Header() {
 			<Link to="/register">Register</Link>
 			<Link to="/login">Login</Link>
 
-			{token && (
-				<>
-					<Link to="/my-accounts">My accounts</Link>
-				</>
-			)}
-		</nav>
-	);
+
+      {token && (
+        <>
+          <Link to="/my-accounts">My accounts</Link>
+          <Link to="/transactions">My transactions</Link>
+          <Link to="/profilpage">profilpage</Link>
+        </>
+      )}
+    </nav>
+  );
+
 }
