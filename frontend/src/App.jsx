@@ -6,6 +6,7 @@ import { SessionContextProvider } from "./sessionContext.jsx";
 import TransactionsPage from "./pages/TransactionsPage.jsx";
 import Header from "./component/header.jsx";
 import MyAccountsPage from "./pages/MyAccountsPage.jsx";
+import VirementPage from "./pages/VirementPage.jsx";
 
 import ProfilPage from "./pages/ProfilPage.jsx";
 
@@ -41,6 +42,7 @@ function App() {
 						path="/beneficiaries/:account_id"
 						element={<BeneficiariesPage />}
 					/>
+          <Route path="/virement" element={<VirementPage/>}/>
 					<Route path="/withdrawals/:account_id" element={<WithdrawalPage />} />
 				</Routes>
 			</BrowserRouter>
