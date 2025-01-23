@@ -23,6 +23,7 @@ export default function Header() {
         <>
           <Link to="/my-accounts">My accounts</Link>
           <Link to="/transactions">My transactions</Link>
+          <Link to="/profilpage">profilpage</Link>
         </>
       )}
     </nav>

@@ -17,7 +17,6 @@ export function RegisterAPI(email, password) {
 			setToken(token);
 		})
 		.catch((error) => {
-			// On propage l'erreur pour qu'elle soit gérée dans le composant
 			throw error;
 		});
 }
