@@ -1,9 +1,13 @@
-import Profil from '../component/Profil'
+
+import Profil from "../component/Profil";
+
 
 function ProfilPage() {
   return (
-    <Profil/>
-  )
+    <>
+      <Profil />
+    </>
+  );
 }
 
-export default ProfilPage
+export default ProfilPage;
