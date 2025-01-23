@@ -10,6 +10,7 @@ import MyAccountsPage from "./pages/MyAccountsPage.jsx";
 import ProfilPage from "./pages/ProfilPage.jsx";
 
 import BeneficiariesPage from "./pages/BeneficiariesPage.jsx";
+import WithdrawalPage from "./pages/WithdrawalPage.jsx";
 
 function App() {
 	useEffect(() => {
@@ -40,6 +41,7 @@ function App() {
 						path="/beneficiaries/:account_id"
 						element={<BeneficiariesPage />}
 					/>
+					<Route path="/withdrawals/:account_id" element={<WithdrawalPage />} />
 				</Routes>
 			</BrowserRouter>
 		</SessionContextProvider>

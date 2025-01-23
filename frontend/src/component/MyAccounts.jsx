@@ -12,7 +12,7 @@ export default function MyAccounts() {
 		GETfetcher
 	);
 
-	console.log(accounts)
+	console.log(accounts);
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -31,8 +31,8 @@ export default function MyAccounts() {
 								</div>
 
 								<Link to={"/transactions/" + account.id}>Transactions</Link>
-
 								<Link to={"/beneficiaries/" + account.id}>Benefiaciaries</Link>
+								<Link to={"/withdrawals/" + account.id}>Withdrawals</Link>
 
 								{!account.is_main && (
 									<button

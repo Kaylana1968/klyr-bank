@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class AddWithdrawal(BaseModel):
-    sender_account_id: UUID
-    receiver_account_id: UUID
+    account_id: UUID
+    iban: str
     amount: float
     starting_on: date
     interval: str

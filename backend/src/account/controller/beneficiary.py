@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
-from sqlalchemy import and_, or_
 from ..model.beneficiary import AddBeneficiary
 from src.auth.controller.utils import get_user, verify_password
 from database.init import get_session
@@ -17,10 +16,6 @@ def get_beneficiaries(
 ):
     account: Account = session.get(Account, UUID(account_id))
 
-    beneficiaries: Beneficiary = session.exec(
-        select(Beneficiary).where(Beneficiary.account_id == account.id)
-    ).all()
-
     if account.user_id != UUID(user["id"]):
         raise HTTPException(status_code=403, detail="It s not your account!")
 
@@ -31,6 +26,10 @@ def get_beneficiaries(
         raise HTTPException(
             status_code=403, detail="Account closed since " + str(account.closed_at)
         )
+
+    beneficiaries: Beneficiary = session.exec(
+        select(Beneficiary).where(Beneficiary.account_id == account.id)
+    ).all()
 
     to_return = []
     for beneficiary in beneficiaries:

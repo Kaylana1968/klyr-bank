@@ -17,7 +17,7 @@ export default function AddBeneficiary() {
 			<input
 				type="text"
 				name="iban"
-				placeholder="iban"
+				placeholder="IBAN"
 				value={values.iban}
 				onChange={handleChange}
 			/>
