@@ -1,4 +1,3 @@
-import React from 'react'
 import Profil from '../component/Profil'
 
 function ProfilPage() {

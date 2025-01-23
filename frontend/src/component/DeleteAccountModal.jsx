@@ -1,6 +1,21 @@
 import { useFormik } from "formik";
-import { deleteAccountAPI } from "../API/DeleteAccountAPI";
 import { useState } from "react";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+
+import { deleteAccountAPI } from "../API/DeleteAccountAPI";
+
+const style = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	width: 400,
+	bgcolor: "background.paper",
+	border: "2px solid #000",
+	boxShadow: 24,
+	p: 4
+};
 
 export default function DeleteAccountModal({
 	deletingAccount,
@@ -13,30 +28,27 @@ export default function DeleteAccountModal({
 			password: ""
 		},
 		onSubmit: ({ password }, { resetForm }) => {
-			deleteAccountAPI(deletingAccount.id, password, setDeletingAccount, setError);
+			deleteAccountAPI(
+				deletingAccount.id,
+				password,
+				setDeletingAccount,
+				setError
+			);
 			resetForm();
 		}
 	});
 
 	return (
-		<div
-			className={`${
-				deletingAccount ? "" : "hidden "
-			}absolute top-0 z-10 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center`}
+		<Modal
+			open={deletingAccount}
+			onClose={() => {
+				resetForm();
+				setDeletingAccount();
+			}}
 		>
-			<div className="w-2/5 h-1/4 bg-gray-200 rounded p-4">
-				<button
-					type="button"
-					onClick={() => {
-						setDeletingAccount();
-						resetForm();
-					}}
-				>
-					Cancel
-				</button>
-
+			<Box sx={style}>
+				<h2 id="parent-modal-title">Enter your password to confirm</h2>
 				<form onSubmit={handleSubmit} className="flex flex-col items-start">
-					<label>Enter your password to confirm :</label>
 					<input
 						type="password"
 						name="password"
@@ -50,7 +62,7 @@ export default function DeleteAccountModal({
 				</form>
 
 				{error && <span className="text-red-700">{error}</span>}
-			</div>
-		</div>
+			</Box>
+		</Modal>
 	);
 }
