@@ -4,9 +4,9 @@ import Profil from "../component/Profil";
 
 function ProfilPage() {
   return (
-    <>
+    <div>
       <Profil />
-    </>
+    </div>
   );
 }
 

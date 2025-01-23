@@ -3,9 +3,9 @@ import Beneficiaries from "../component/Beneficiaries";
 
 export default function BeneficiariesPage() {
 	return (
-		<>
+		<div>
 			<Beneficiaries />
 			<AddBeneficiary />
-		</>
+		</div>
 	);
 }
