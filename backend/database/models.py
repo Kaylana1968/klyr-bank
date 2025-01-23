@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from uuid import UUID, uuid4
-from datetime import datetime
+from datetime import datetime, date
 from .utils import iban_generator
 
 
@@ -38,6 +38,18 @@ class Account(SQLModel, table=True):
         sa_relationship_kwargs={"foreign_keys": "Transaction.receiver_account_id"},
     )
     deposits: List["Deposit"] = Relationship(back_populates="account")
+    beneficiaries: List["Beneficiary"] = Relationship(
+        back_populates="beneficiary_account",
+        sa_relationship_kwargs={"foreign_keys": "Beneficiary.beneficiary_account_id"},
+    )
+    sending_withdrawals: List["Withdrawal"] = Relationship(
+        back_populates="sender_account",
+        sa_relationship_kwargs={"foreign_keys": "Withdrawal.sender_account_id"},
+    )
+    receiving_withdrawals: List["Withdrawal"] = Relationship(
+        back_populates="receiver_account",
+        sa_relationship_kwargs={"foreign_keys": "Withdrawal.receiver_account_id"},
+    )
 
 
 class Transaction(SQLModel, table=True):
@@ -67,3 +79,36 @@ class Deposit(SQLModel, table=True):
 
     # Relations
     account: "Account" = Relationship(back_populates="deposits")
+
+
+class Beneficiary(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    account_id: UUID = Field(foreign_key="account.id", index=True)
+    beneficiary_account_id: UUID = Field(foreign_key="account.id")
+
+    # Relation
+    beneficiary_account: Account = Relationship(
+        back_populates="beneficiaries",
+        sa_relationship_kwargs={"foreign_keys": "Beneficiary.beneficiary_account_id"},
+    )
+
+
+class Withdrawal(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    sender_account_id: UUID = Field(foreign_key="account.id", index=True)
+    receiver_account_id: UUID = Field(foreign_key="account.id")
+    amount: float = Field()
+    interval: str = Field()
+    starting_on: date = Field()
+    last_sent_at: date | None = Field()
+    is_active: bool = Field(default=True)
+
+    # Relations
+    sender_account: "Account" = Relationship(
+        back_populates="sending_withdrawals",
+        sa_relationship_kwargs={"foreign_keys": "Withdrawal.sender_account_id"},
+    )
+    receiver_account: "Account" = Relationship(
+        back_populates="receiving_withdrawals",
+        sa_relationship_kwargs={"foreign_keys": "Withdrawal.receiver_account_id"},
+    )

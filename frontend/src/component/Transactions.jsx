@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { TransactionsAPI } from "../API/TransactionsAPI";
 import { useFormik } from "formik";
@@ -24,7 +24,7 @@ function Transactions() {
       }
     }
     fetchTransactions(account_id);
-  }, []);
+  }, [account_id]);
 
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues: {

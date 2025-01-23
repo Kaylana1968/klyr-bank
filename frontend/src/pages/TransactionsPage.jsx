@@ -1,10 +1,13 @@
-import React from 'react'
-import Transactions from '../component/Transactions'
+import Transactions from "../component/Transactions";
+import Accountpdf from "../component/Accountpdf";
 
 function TransactionsPage() {
   return (
-    <Transactions/>
-  )
+    <>
+      <Transactions />
+      <Accountpdf />
+    </>
+  );
 }
 
-export default TransactionsPage
+export default TransactionsPage;

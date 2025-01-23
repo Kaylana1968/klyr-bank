@@ -8,6 +8,11 @@ export function setToken(token) {
 	cookies.set(sessionTokenKey, token);
 }
 
+export function logOut() {
+	cookies.set(sessionTokenKey, "")
+	window.location.href = '/login'
+}
+
 export function getToken() {
 	return cookies.get(sessionTokenKey);
 }

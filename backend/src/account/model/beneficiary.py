@@ -1,10 +1,12 @@
 from typing import Optional
 from pydantic import BaseModel
+from uuid import UUID
 
 
-class OpenAccount(BaseModel):
-    name: str
-    type: str
+class AddBeneficiary(BaseModel):
+    account_id: UUID
+    iban: str
+
 
 
 class CloseAccount(BaseModel):
