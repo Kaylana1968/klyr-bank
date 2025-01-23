@@ -1,10 +1,7 @@
-import React from 'react'
-import Virement from '../component/Virement'
+import Virement from "../component/Virement";
 
 function VirementPage() {
-  return (
-    <Virement/>
-  )
+	return <Virement />;
 }
 
-export default VirementPage
+export default VirementPage;

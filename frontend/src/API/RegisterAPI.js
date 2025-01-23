@@ -8,7 +8,7 @@ export function RegisterAPI(email, password) {
 		},
 		body: JSON.stringify({ email, password })
 	})
-		.then(async (res) => {
+		.then(async res => {
 			if (!res.ok) {
 				const error = await res.json();
 				throw new Error(error.detail || "Une erreur est survenue.");
@@ -16,7 +16,7 @@ export function RegisterAPI(email, password) {
 			const token = await res.json();
 			setToken(token);
 		})
-		.catch((error) => {
+		.catch(error => {
 			throw error;
 		});
 }

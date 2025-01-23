@@ -21,7 +21,7 @@ export default function Sidebar() {
 			{token && (
 				<>
 					<Link to="/my-accounts">My accounts</Link>
-          <Link to="/virement">Virement</Link>
+					<Link to="/virement">Virement</Link>
 					<Link to="/profile">Profile</Link>
 				</>
 			)}

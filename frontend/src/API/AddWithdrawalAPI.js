@@ -1,7 +1,13 @@
 import { mutate } from "swr";
 import { getToken } from "../auth";
 
-export function AddWithdrawalAPI(account_id, iban, amount, starting_on, interval) {
+export function AddWithdrawalAPI(
+	account_id,
+	iban,
+	amount,
+	starting_on,
+	interval
+) {
 	fetch("http://127.0.0.1:8000/api/add-withdrawal", {
 		method: "POST",
 		headers: {

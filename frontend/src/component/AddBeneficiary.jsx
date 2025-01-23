@@ -22,7 +22,7 @@ export default function AddBeneficiary() {
 				onChange={handleChange}
 			/>
 
-      <button type="submit">Ajouter</button>
+			<button type="submit">Ajouter</button>
 		</form>
 	);
 }

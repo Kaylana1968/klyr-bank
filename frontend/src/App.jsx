@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { SessionContextProvider } from "./sessionContext.jsx";
 import TransactionsPage from "./pages/TransactionsPage.jsx";
 import Sidebar from "./component/Sidebar.jsx";
 import MyAccountsPage from "./pages/MyAccountsPage.jsx";
@@ -23,7 +22,6 @@ function App() {
 	}, []);
 
 	return (
-		<SessionContextProvider>
 			<BrowserRouter>
 				<Sidebar />
 
@@ -42,11 +40,10 @@ function App() {
 						path="/beneficiaries/:account_id"
 						element={<BeneficiariesPage />}
 					/>
-          <Route path="/virement" element={<VirementPage/>}/>
+					<Route path="/virement" element={<VirementPage />} />
 					<Route path="/withdrawals/:account_id" element={<WithdrawalPage />} />
 				</Routes>
 			</BrowserRouter>
-		</SessionContextProvider>
 	);
 }
 

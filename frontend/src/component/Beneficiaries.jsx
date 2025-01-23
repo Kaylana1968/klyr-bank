@@ -19,9 +19,9 @@ export default function Beneficiaries() {
 				beneficiaries.map((beneficiary, index) => (
 					<Fragment key={index}>
 						{index === 0 && <hr className="my-3" />}
-						
-            <div>{beneficiary.iban}</div>
-            
+
+						<div>{beneficiary.iban}</div>
+
 						<hr className="my-3" />
 					</Fragment>
 				))}

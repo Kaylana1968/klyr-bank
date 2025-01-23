@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { changePassword } from "../API/ChangePassword";
 import { useFormik } from "formik";
-import { logOut } from "../auth";
+import { logout } from "../auth";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 
@@ -75,7 +75,7 @@ function Profil() {
 			);
 			console.log(response);
 			setResponseMessage("Mot de passe changé avec succès !");
-			logOut();
+			logout();
 		} catch (error) {
 			setResponseMessage(error.message);
 		}
@@ -114,7 +114,7 @@ function Profil() {
 				<button type="submit">Changer de mot de passe</button>
 			</form>
 
-			<button onClick={() => logOut()}>Déconnexion</button>
+			<button onClick={() => logout()}>Déconnexion</button>
 
 			<Modal
 				open={open}
