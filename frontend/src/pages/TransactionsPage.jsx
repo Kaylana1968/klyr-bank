@@ -3,10 +3,10 @@ import Accountpdf from "../component/Accountpdf";
 
 function TransactionsPage() {
   return (
-    <>
+    <div>
       <Transactions />
       <Accountpdf />
-    </>
+    </div>
   );
 }
 

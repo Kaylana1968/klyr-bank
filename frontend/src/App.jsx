@@ -4,7 +4,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { SessionContextProvider } from "./sessionContext.jsx";
 import TransactionsPage from "./pages/TransactionsPage.jsx";
-import Header from "./component/header.jsx";
+import Sidebar from "./component/Sidebar.jsx";
 import MyAccountsPage from "./pages/MyAccountsPage.jsx";
 
 import ProfilPage from "./pages/ProfilPage.jsx";
@@ -24,14 +24,14 @@ function App() {
 	return (
 		<SessionContextProvider>
 			<BrowserRouter>
-				<Header />
+				<Sidebar />
 
 				<Routes>
 					<Route path="/register" element={<RegisterPage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/my-accounts" element={<MyAccountsPage />} />
 
-					<Route path="/profilpage" element={<ProfilPage />} />
+					<Route path="/profile" element={<ProfilPage />} />
 
 					<Route
 						path="/transactions/:account_id"
