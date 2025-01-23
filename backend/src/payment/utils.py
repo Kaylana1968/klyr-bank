@@ -1,6 +1,6 @@
-from database.models import Account, Transaction
+from database.models import Account, Transaction, Withdrawal
 from sqlmodel import select
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 # If amount of secondary bank account > 50 000 money is redirected to main account
@@ -57,3 +57,35 @@ def update_transaction_status(session):
             session.commit()
             session.refresh(transaction)
             session.refresh(receiver_account)
+
+
+# Send withdrawals if interval of time is exceeded
+def send_withdrawal(session):
+    withdrawals = session.exec(select(Withdrawal).where(Withdrawal.is_active)).all()
+    today = date.today()
+
+    for withdrawal in withdrawals:
+        if withdrawal.last_sent_at == None:
+            if withdrawal.starting_on == today:
+                # make withdrawal
+                pass
+        else:
+            if "month" in withdrawal.interval:
+                year = withdrawal.last_sent_at.year
+                month = withdrawal.last_sent_at.month + int(withdrawal.interval[0])
+
+                if month > 12:
+                    year += 1
+                    month = month % 12
+
+                new_date = date(year, month, withdrawal.starting_on.day)
+            elif "year" in withdrawal.interval:
+                year = withdrawal.last_sent_at.year + int(withdrawal.interval[0])
+
+                new_date = date(
+                    year, withdrawal.starting_on.month, withdrawal.starting_on.day
+                )
+
+            if new_date <= today:
+                # make withdrawal
+                pass
