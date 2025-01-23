@@ -1,4 +1,6 @@
+
 import Profil from "../component/Profil";
+
 
 function ProfilPage() {
   return (
