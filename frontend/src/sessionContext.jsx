@@ -4,7 +4,6 @@ import { getToken } from "./auth";
 // eslint-disable-next-line react-refresh/only-export-components
 export const SessionContext = createContext({});
 
-// eslint-disable-next-line react/prop-types
 export function SessionContextProvider({ children }) {
 	const token = getToken();
 
