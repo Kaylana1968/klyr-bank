@@ -65,12 +65,19 @@ def send_withdrawal(session):
     today = date.today()
 
     for withdrawal in withdrawals:
-        if withdrawal.last_sent_at == None:
-            if withdrawal.starting_on == today:
-                # make withdrawal
-                pass
-        else:
-            if "month" in withdrawal.interval:
+        is_first_withdraw = withdrawal.last_sent_at == None
+
+        if is_first_withdraw and withdrawal.starting_on != today:
+            continue
+
+        if not is_first_withdraw:
+            month_in_interval = "month" in withdrawal.interval
+            year_in_interval = "year" in withdrawal.interval
+
+            if not month_in_interval and not year_in_interval:
+                continue
+
+            if month_in_interval:
                 year = withdrawal.last_sent_at.year
                 month = withdrawal.last_sent_at.month + int(withdrawal.interval[0])
 
@@ -79,13 +86,28 @@ def send_withdrawal(session):
                     month = month % 12
 
                 new_date = date(year, month, withdrawal.starting_on.day)
-            elif "year" in withdrawal.interval:
+            elif year_in_interval:
                 year = withdrawal.last_sent_at.year + int(withdrawal.interval[0])
 
                 new_date = date(
                     year, withdrawal.starting_on.month, withdrawal.starting_on.day
                 )
 
-            if new_date <= today:
-                # make withdrawal
-                pass
+            if new_date > today:
+                continue
+
+        if withdrawal.sender_account.amount - withdrawal.amount < 0:
+            pass
+
+        transaction = Transaction(
+            sender_account_id=withdrawal.sender_account_id,
+            receiver_account_id=withdrawal.receiver_account_id,
+            amount=withdrawal.amount,
+            status="RECEIVED",
+        )
+
+        transaction.sender_account.amount -= transaction.amount
+        transaction.receiver_account.amount += transaction.amount
+
+        session.add(transaction)
+        session.commit()
