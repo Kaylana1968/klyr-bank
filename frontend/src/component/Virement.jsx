@@ -4,6 +4,11 @@ import { GETfetcher } from "../constants/fetcher";
 import { useFormik } from "formik";
 import { CreateTransactionAPI } from "../API/CreateTransactionAPI";
 import { GetAccountByIban } from "../API/MyAccountsAPI";
+import Button from "./ui/Button";
+import Container from "./ui/Container";
+import Title from "./ui/Title";
+import InputField from "./ui/InputField";
+import SelectField from "./ui/SelectField";
 
 function Virement() {
 	const [responseMessage, setResponseMessage] = useState("");
@@ -54,31 +59,24 @@ function Virement() {
 			{isLoading ? (
 				<div>Loading...</div>
 			) : (
-				<div>
-					<h3 className="font-bold my-5">Effectuer un virement</h3>
-					<form onSubmit={handleSubmit} className="flex flex-col gap-2">
-						<div className="flex flex-col ">
-							<label>Débiteur</label>
-							<select
+				<Container>
+					<Title>Effectuer un virement</Title>
+					<form onSubmit={handleSubmit} className="flex flex-col gap-4">
+						<div>
+							<SelectField
+								label="Débiteur"
+								options={accounts}
 								name="sender"
 								value={values.sender}
 								onChange={handleChange}
-							>
-								<option value={null}>Selectionner un compte</option>
-								{accounts.map(account => (
-									<option key={account.id} value={account.id}>
-										{account.name}
-									</option>
-								))}
-							</select>
+							/>
 							{errors.sender && (
 								<p className="text-red-500 text-sm">{errors.sender}</p>
 							)}
 						</div>
-						<div className="flex flex-col">
-							<label>Destinataire</label>
-							<input
-								className="border p"
+						<div>
+							<InputField
+								label="Destinataire"
 								type="text"
 								name="iban"
 								placeholder="Entrer un IBAN"
@@ -89,10 +87,9 @@ function Virement() {
 								<p className="text-red-500 text-sm">{errors.iban}</p>
 							)}
 						</div>
-						<div className="flex flex-col">
-							<label>Montant</label>
-							<input
-								className="border p"
+						<div>
+							<InputField
+								label="Montant"
 								type="number"
 								name="amount"
 								placeholder="Entrer un montant"
@@ -103,12 +100,10 @@ function Virement() {
 								<p className="text-red-500 text-sm">{errors.amount}</p>
 							)}
 						</div>
-						<button type="submit" className="border border-black">
-							Envoyer
-						</button>
+						<Button type="submit">Envoyer</Button>
 					</form>
 					<p>{responseMessage}</p>
-				</div>
+				</Container>
 			)}
 		</>
 	);

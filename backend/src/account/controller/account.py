@@ -31,6 +31,24 @@ def show_account(account_id: str, session=Depends(get_session), user=Depends(get
 
     else:
         return account
+    
+    # Show one account from user by account id
+@router.get("/account/iban/{iban}")
+def show_account(iban: str, session=Depends(get_session), user=Depends(get_user)):
+    account: Account = session.exec(
+        select(Account).where(Account.iban == iban)
+    ).first()
+
+    if account == None:
+        raise HTTPException(status_code=404, detail="Account not found")
+
+    elif account.is_activated == False:
+        raise HTTPException(
+            status_code=403, detail="Account closed since " + str(account.closed_at)
+        )
+
+    else:
+        return account
 
 
 # Show all accounts from user with user token
