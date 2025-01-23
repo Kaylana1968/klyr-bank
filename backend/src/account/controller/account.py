@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 from sqlalchemy import and_, or_
-from ..model.account import OpenAccount
-from src.auth.controller.utils import get_user
+from ..model.account import OpenAccount, CloseAccount
+from src.auth.controller.utils import get_user, verify_password
 from database.init import get_session
-from database.models import Account, Transaction
+from database.models import Account, Transaction, User
 from uuid import UUID
 import datetime
 
@@ -53,7 +53,9 @@ def open_account(
 
     name = body.name if body.name != "" else None
 
-    account = Account(user_id=UUID(user["id"]), is_main=False, name=name, type=body.type)
+    account = Account(
+        user_id=UUID(user["id"]), is_main=False, name=name, type=body.type
+    )
     session.add(account)
     session.commit()
     session.refresh(account)
@@ -64,9 +66,16 @@ def open_account(
 # Close bank account by account id
 @router.put("/close-account/{account_id}")
 def close_account(
-    account_id: str, user=Depends(get_user), session=Depends(get_session)
+    body: CloseAccount,
+    account_id: str,
+    user=Depends(get_user),
+    session=Depends(get_session),
 ):
     account: Account = session.get(Account, UUID(account_id))
+    user: User = session.get(User, UUID(user["id"]))
+
+    if not verify_password(body.password, user.password):
+        raise HTTPException(status_code=403, detail="Password is incorrect")
 
     if account.is_main == True:
         raise HTTPException(status_code=403, detail="You can't close the main account")
@@ -92,7 +101,7 @@ def close_account(
     if account.amount > 0:
         mainAccount: Account = session.exec(
             select(Account).where(
-                and_(Account.user_id == UUID(user["id"]), Account.is_main == True)
+                and_(Account.user_id == user.id, Account.is_main == True)
             )
         ).first()
 
@@ -109,4 +118,4 @@ def close_account(
     session.commit()
     session.refresh(account)
 
-    raise HTTPException(status_code=403, detail="The account has been closed")
+    raise HTTPException(status_code=200, detail="The account has been closed")

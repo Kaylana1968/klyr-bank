@@ -38,6 +38,10 @@ class Account(SQLModel, table=True):
         sa_relationship_kwargs={"foreign_keys": "Transaction.receiver_account_id"},
     )
     deposits: List["Deposit"] = Relationship(back_populates="account")
+    beneficiaries: List["Beneficiary"] = Relationship(
+        back_populates="beneficiary_account",
+        sa_relationship_kwargs={"foreign_keys": "Beneficiary.beneficiary_account_id"},
+    )
 
 
 class Transaction(SQLModel, table=True):
@@ -67,3 +71,15 @@ class Deposit(SQLModel, table=True):
 
     # Relations
     account: "Account" = Relationship(back_populates="deposits")
+
+
+class Beneficiary(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    account_id: UUID = Field(foreign_key="account.id", index=True)
+    beneficiary_account_id: UUID = Field(foreign_key="account.id")
+
+    # Relation
+    beneficiary_account: Account = Relationship(
+        back_populates="beneficiaries",
+        sa_relationship_kwargs={"foreign_keys": "Beneficiary.beneficiary_account_id"},
+    )
