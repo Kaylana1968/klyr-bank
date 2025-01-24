@@ -18,7 +18,7 @@ function InputField({ label, type, name, placeholder, value, onChange }) {
 
 InputField.propTypes = {
 	label: PropTypes.string.isRequired,
-	type: PropTypes.oneOf(["text", "number"]).isRequired,
+	type: PropTypes.oneOf(["text", "number", "date"]).isRequired,
 	name: PropTypes.string.isRequired,
 	placeholder: PropTypes.string.isRequired,
 	value: PropTypes.string.isRequired,
