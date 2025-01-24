@@ -54,58 +54,52 @@ function Virement() {
 		}
 	});
 
+	if (isLoading) return <div>Loading...</div>;
+
 	return (
-		<>
-			{isLoading ? (
-				<div>Loading...</div>
-			) : (
-				<Container>
-					<Title>Effectuer un virement</Title>
-					<form onSubmit={handleSubmit} className="flex flex-col gap-4">
-						<div>
-							<SelectField
-								label="Débiteur"
-								options={accounts}
-								name="sender"
-								value={values.sender}
-								onChange={handleChange}
-							/>
-							{errors.sender && (
-								<p className="text-red-500 text-sm">{errors.sender}</p>
-							)}
-						</div>
-						<div>
-							<InputField
-								label="Destinataire"
-								type="text"
-								name="iban"
-								placeholder="Entrer un IBAN"
-								value={values.iban}
-								onChange={handleChange}
-							/>
-							{errors.iban && (
-								<p className="text-red-500 text-sm">{errors.iban}</p>
-							)}
-						</div>
-						<div>
-							<InputField
-								label="Montant"
-								type="number"
-								name="amount"
-								placeholder="Entrer un montant"
-								value={values.amount}
-								onChange={handleChange}
-							/>
-							{errors.amount && (
-								<p className="text-red-500 text-sm">{errors.amount}</p>
-							)}
-						</div>
-						<Button type="submit">Envoyer</Button>
-					</form>
-					<p>{responseMessage}</p>
-				</Container>
-			)}
-		</>
+		<Container>
+			<Title>Effectuer un virement</Title>
+			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
+				<div>
+					<SelectField
+						label="Débiteur"
+						options={accounts}
+						name="sender"
+						value={values.sender}
+						onChange={handleChange}
+					/>
+					{errors.sender && (
+						<p className="text-red-500 text-sm">{errors.sender}</p>
+					)}
+				</div>
+				<div>
+					<InputField
+						label="Destinataire"
+						type="text"
+						name="iban"
+						placeholder="Entrer un IBAN"
+						value={values.iban}
+						onChange={handleChange}
+					/>
+					{errors.iban && <p className="text-red-500 text-sm">{errors.iban}</p>}
+				</div>
+				<div>
+					<InputField
+						label="Montant"
+						type="number"
+						name="amount"
+						placeholder="Entrer un montant"
+						value={values.amount}
+						onChange={handleChange}
+					/>
+					{errors.amount && (
+						<p className="text-red-500 text-sm">{errors.amount}</p>
+					)}
+				</div>
+				<Button type="submit">Envoyer</Button>
+			</form>
+			<p>{responseMessage}</p>
+		</Container>
 	);
 }
 

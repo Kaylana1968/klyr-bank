@@ -1,16 +1,11 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-function Container({children}) {
-  return (
-    <main className='w-full h-full p-10 flex flex-col'>
-        {children}
-    </main>
-  )
+function Container({ children }) {
+	return <main className="w-full h-full p-10 flex flex-col">{children}</main>;
 }
 
 Container.propTypes = {
-    children: PropTypes.node.isRequired,
+	children: PropTypes.node.isRequired
 };
 
-
-export default Container
+export default Container;
