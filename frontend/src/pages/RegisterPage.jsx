@@ -1,8 +1,8 @@
-import Register from "../component/register";
+import Register from "../component/Register";
 
 function RegisterPage() {
 	return (
-		<div>
+		<div className="w-full">
 			<Register />
 		</div>
 	);
