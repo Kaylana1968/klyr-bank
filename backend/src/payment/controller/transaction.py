@@ -59,9 +59,8 @@ def transaction(
     session.add(sender_account)
     session.commit()
     session.refresh(transaction)
-    session.refresh(sender_account)
 
-    raise HTTPException(status_code=200, detail="The transaction is done")
+    return transaction
 
 
 # Show all transactions and deposits from user by id

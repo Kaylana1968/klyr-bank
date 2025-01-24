@@ -1,10 +1,7 @@
 import { mutate } from "swr";
 import { getToken } from "../auth";
 
-export function CreateTransactionAPI(sender, receiver, amount) {
-	console.log("sender:", sender);
-	console.log("receiver:", receiver);
-	console.log("amount:", amount);
+export async function CreateTransactionAPI(sender, receiver, amount) {
 	return fetch("http://127.0.0.1:8000/api/transaction", {
 		method: "POST",
 		headers: {
@@ -19,16 +16,16 @@ export function CreateTransactionAPI(sender, receiver, amount) {
 	})
 		.then(async res => {
 			if (res.ok) {
-				console.log("Réponse ok:", res);
 				return res.json();
 			} else {
 				const errorData = await res.json();
-				console.error("Erreur API:", errorData);
 				throw new Error(errorData.detail || "Erreur inconnue du serveur");
 			}
 		})
-		.then(() => {
+		.then(res => {
 			mutate("http://127.0.0.1:8000/api/transaction");
+
+			return res;
 		})
 		.catch(error => {
 			console.error("Erreur dans le catch:", error.message);
