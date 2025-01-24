@@ -55,7 +55,7 @@ function Transactions() {
 
   return (
     <>
-      <div className="p-6 min-h-screen">
+      <div className="p-6 min-h-[95vh]">
         <form
           onChange={handleSubmit}
           className="bg-white shadow-md p-4 rounded-lg"

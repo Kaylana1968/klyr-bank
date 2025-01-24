@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-
+import InputField from "./ui/InputField";
 import { accountTypes } from "../constants/account";
 import { CreateAccountAPI } from "../API/CreateAccountAPI";
 
@@ -20,7 +20,7 @@ export default function CreateAccount() {
       <select
         name="type"
         onChange={handleChange}
-        className="w-full border border-primary rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        className="bg-white outline-none border-2 border-secondary-dark rounded py-1 px-2 focus:border-primary transition-colors duration-300s ease w-full"
       >
         {accountTypes.map((type) => (
           <option key={type} value={type}>
@@ -35,7 +35,7 @@ export default function CreateAccount() {
         placeholder="Nom du compte"
         value={values.name}
         onChange={handleChange}
-        className="w-full border border-primary rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        className="outline-none border-2 border-secondary-dark rounded py-1 px-2 focus:border-primary transition-colors duration-300s ease w-full"
       />
 
       <button
