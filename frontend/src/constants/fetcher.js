@@ -1,13 +1,11 @@
 import { getToken } from "../auth";
 
-const token = getToken();
-
 export const GETfetcher = url =>
 	fetch(url, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${token}`
+			Authorization: `Bearer ${getToken()}`
 		}
 	}).then(res => res.json());
 
@@ -16,7 +14,7 @@ export const POSTfetcher = url =>
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${token}`
+			Authorization: `Bearer ${getToken()}`
 		}
 	}).then(res => res.json());
 
@@ -25,6 +23,6 @@ export const PUTfetcher = url =>
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${token}`
+			Authorization: `Bearer ${getToken()}`
 		}
 	}).then(res => res.json());
