@@ -11,6 +11,7 @@ import ProfilPage from "./pages/ProfilPage.jsx";
 
 import BeneficiariesPage from "./pages/BeneficiariesPage.jsx";
 import WithdrawalPage from "./pages/WithdrawalPage.jsx";
+import DashboardPage from "./pages/DashboardPage.jsx";
 
 function App() {
 	useEffect(() => {
@@ -42,6 +43,7 @@ function App() {
 					/>
 					<Route path="/virement" element={<VirementPage />} />
 					<Route path="/withdrawals/:account_id" element={<WithdrawalPage />} />
+					<Route path="/dashboard" element={<DashboardPage />} />
 				</Routes>
 			</BrowserRouter>
 	);
