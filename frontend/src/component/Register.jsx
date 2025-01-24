@@ -43,6 +43,7 @@ function Register() {
 			try {
 				const response = await RegisterAPI(email, password, setToken);
 				setResponseMessage("Compte créé avec succès !", response);
+				window.location.href = "/my-accounts";
 			} catch (error) {
 				setResponseMessage(error.message);
 			}

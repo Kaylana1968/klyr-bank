@@ -2,22 +2,9 @@ import { useState } from "react";
 import { changePassword } from "../API/ChangePassword";
 import { useFormik } from "formik";
 import { logout } from "../auth";
-import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import InputField from "./ui/InputField";
 import Title from "./ui/Title";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 function Profil() {
   const [responseMessage, setResponseMessage] = useState(null);
@@ -132,13 +119,6 @@ function Profil() {
           Changer de mot de passe
         </button>
       </form>
-
-      <button
-        onClick={() => logout()}
-        className="bg-secondary text-primary font-bold py-2 px-4 rounded hover:bg-secondary-dark transition duration-300 mt-4 w-full max-w-md mx-auto"
-      >
-        Déconnexion
-      </button>
 
       <Modal
         open={open}
