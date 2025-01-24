@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import Button from './ui/Button'
 import {
   Page,
   Text,
@@ -96,9 +97,9 @@ export default function Accountpdf() {
   );
 
   return (
-    <div>
+    <div className="pl-6">
       <PDFDownloadLink document={<MyDocument />} fileName="relevé de compte">
-        <button>Dowload PDF</button>
+        <Button>Dowload PDF</Button>
       </PDFDownloadLink>
     </div>
   );
