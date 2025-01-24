@@ -55,7 +55,7 @@ function Transactions() {
 
   return (
     <>
-      <div className="p-6 min-h-[95vh]">
+      <div className="p-6 min-h-[60vh]">
         <form
           onChange={handleSubmit}
           className="bg-white shadow-md p-4 rounded-lg"
@@ -88,27 +88,28 @@ function Transactions() {
         <h1 className="py-4 text-primary text-lg font-bold">
           Mes virements et dépôts :
         </h1>
-
-        {filteredTransactions.map((transaction, index) => (
-          <Fragment key={index}>
-            <hr className="border-primary my-4" />
-            <div className="py-4 bg-white shadow-sm rounded-lg p-4">
-              {(transaction.status != null && (
-                <h2 className="font-bold text-primary">Virement</h2>
-              )) || <h2 className="font-bold text-primary">Dépôt</h2>}
-              <p className="text-gray-700">Date : {transaction.done_at}</p>
-              <p className="text-gray-700">Montant : {transaction.amount}</p>
-              {transaction.receiver_account_id != null && (
-                <p className="text-gray-700">
-                  Créditeur : {transaction.receiver_account_id}
-                </p>
-              )}
-              {transaction.status != null && (
-                <p className="text-gray-700">Status : {transaction.status}</p>
-              )}
-            </div>
-          </Fragment>
-        ))}
+        <div className="overflow-auto max-h-[23vh]">
+          {filteredTransactions.map((transaction, index) => (
+            <Fragment key={index}>
+              <hr className="border-primary my-4" />
+              <div className="py-4 bg-white shadow-sm rounded-lg p-4">
+                {(transaction.status != null && (
+                  <h2 className="font-bold text-primary">Virement</h2>
+                )) || <h2 className="font-bold text-primary">Dépôt</h2>}
+                <p className="text-gray-700">Date : {transaction.done_at}</p>
+                <p className="text-gray-700">Montant : {transaction.amount}</p>
+                {transaction.receiver_account_id != null && (
+                  <p className="text-gray-700">
+                    Créditeur : {transaction.receiver_account_id}
+                  </p>
+                )}
+                {transaction.status != null && (
+                  <p className="text-gray-700">Status : {transaction.status}</p>
+                )}
+              </div>
+            </Fragment>
+          ))}
+        </div>
       </div>
     </>
   );

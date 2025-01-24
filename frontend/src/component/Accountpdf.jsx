@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import Button from './ui/Button'
+import Button from "./ui/Button";
 import {
   Page,
   Text,
@@ -11,6 +11,8 @@ import {
 } from "@react-pdf/renderer";
 import { MyAccountAPI } from "../API/MyAccountAPI";
 import { TransactionsAPI } from "../API/TransactionsAPI";
+import InputField from "./ui/InputField";
+import { useFormik } from "formik";
 
 const styles = {
   container: {
@@ -52,7 +54,6 @@ export default function Accountpdf() {
     async function fetchTransactions(accountId) {
       try {
         const response = await TransactionsAPI(accountId);
-        console.log(response);
         setTransaction(response);
         setFilteredTransaction(response);
       } catch (error) {
@@ -64,6 +65,30 @@ export default function Accountpdf() {
     }
     fetchTransactions(account_id);
   }, [account_id]);
+
+  const { values, handleChange, handleSubmit } = useFormik({
+    initialValues: {
+      startDate: "", 
+      endDate: "",
+    },
+    onSubmit: ({ startDate, endDate }) => {
+      if (!startDate || !endDate) {
+        console.warn("Les dates de début et de fin doivent être renseignées.");
+        return;
+      }
+      const parsedStartDate = new Date(startDate);
+      const parsedEndDate = new Date(endDate);
+      const result = transactions.filter((transaction) => {
+        const transactionDate = new Date(transaction.done_at);
+        return (
+          transactionDate >= parsedStartDate && transactionDate <= parsedEndDate
+        );
+      });
+  
+      setFilteredTransaction(result);
+    },
+  });
+  
 
   const MyDocument = () => (
     <Document>
@@ -82,7 +107,7 @@ export default function Accountpdf() {
         </View>
         <View>
           <Text style={styles.title}>Transactions</Text>
-          {transactions.map((transaction, index) => (
+          {filteredTransactions.map((transaction, index) => (
             <View key={index} style={styles.transaction}>
               <Text style={styles.text}>Montant: {transaction.amount}</Text>
               <Text style={styles.text}>Date: {transaction.done_at}</Text>
@@ -97,10 +122,51 @@ export default function Accountpdf() {
   );
 
   return (
-    <div className="pl-6">
-      <PDFDownloadLink document={<MyDocument />} fileName="relevé de compte">
-        <Button>Dowload PDF</Button>
-      </PDFDownloadLink>
+    <div className="p-6 max-h-[40vh] overflow-auto">
+      <div className="mb-8">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col md:flex-row items-center gap-4"
+        >
+          <InputField
+            className="border border-primary p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Date de début"
+            name="startDate"
+            type="date"
+            value={values.startDate}
+            onChange={handleChange}
+          />
+          <InputField
+            className="border border-primary p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Date de fin"
+            name="endDate"
+            type="date"
+            value={values.endDate}
+            onChange={handleChange}
+          />
+          <button
+            type="submit"
+            className="bg-primary text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+          >
+            Filtrer
+          </button>
+        </form>
+      </div>
+      <div className="flex justify-between items-center mb-6">
+        <PDFDownloadLink
+          document={<MyDocument />}
+          fileName="relevé_de_compte.pdf"
+        >
+          <Button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">
+            Télécharger PDF
+          </Button>
+        </PDFDownloadLink>
+      </div>
+      <div className="bg-white rounded-lg shadow-lg p-4">
+        <PDFViewer className="w-full h-96">
+          <MyDocument />
+        </PDFViewer>
+      </div>
     </div>
   );
 }
