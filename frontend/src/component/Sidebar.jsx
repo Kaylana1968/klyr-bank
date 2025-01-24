@@ -18,18 +18,22 @@ export default function Sidebar() {
 			<h1 className="text-center text-xl font-bold py-5">KLYR Bank</h1>
 			<hr className="w-2/3 border-primary" />
 			<nav className="flex flex-col h-screen w-full gap- py-5">
-				<Link
-					to="/register"
-					className="py-2 px-6 hover:bg-secondary-dark hover:text-white transition-colors duration-300s ease"
-				>
-					Register
-				</Link>
-				<Link
-					to="/login"
-					className="py-2 px-6 hover:bg-secondary-dark hover:text-white transition-colors duration-300s ease"
-				>
-					Login
-				</Link>
+				{!token && (
+					<div className="flex flex-col h-screen w-full">
+						<Link
+							to="/register"
+							className="py-2 px-6 hover:bg-secondary-dark hover:text-white transition-colors duration-300s ease"
+						>
+							Register
+						</Link>
+						<Link
+							to="/login"
+							className="py-2 px-6 hover:bg-secondary-dark hover:text-white transition-colors duration-300s ease"
+						>
+							Login
+						</Link>
+					</div>
+				)}
 
 				{token && (
 					<>

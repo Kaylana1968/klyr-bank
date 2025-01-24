@@ -3,7 +3,7 @@ import Accountpdf from "../component/Accountpdf";
 
 function TransactionsPage() {
 	return (
-		<div>
+		<div className="w-full">
 			<Transactions />
 			<Accountpdf />
 		</div>
