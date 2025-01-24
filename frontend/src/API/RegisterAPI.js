@@ -1,6 +1,6 @@
 import { setToken } from "../auth";
 
-export function RegisterAPI(email, password) {
+export async function RegisterAPI(email, password, setContextToken) {
 	return fetch("http://127.0.0.1:8000/api/register", {
 		method: "POST",
 		headers: {
@@ -15,6 +15,7 @@ export function RegisterAPI(email, password) {
 			}
 			const token = await res.json();
 			setToken(token);
+			setContextToken(token)
 		})
 		.catch(error => {
 			throw error;

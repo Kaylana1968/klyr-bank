@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { getToken } from "../auth";
+import AuthContext from "../auth.context";
 
 export default function Sidebar() {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
 
-	const token = getToken();
+	const { token } = useContext(AuthContext);
 
 	useEffect(() => {
 		if (pathname !== "/login" && pathname !== "/register" && !token)

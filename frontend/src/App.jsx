@@ -1,16 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
+
+import AuthContext from "./auth.context.js";
+
+import Sidebar from "./component/Sidebar.jsx";
+
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import TransactionsPage from "./pages/TransactionsPage.jsx";
-import Sidebar from "./component/Sidebar.jsx";
 import MyAccountsPage from "./pages/MyAccountsPage.jsx";
 import VirementPage from "./pages/VirementPage.jsx";
-
 import ProfilPage from "./pages/ProfilPage.jsx";
-
 import BeneficiariesPage from "./pages/BeneficiariesPage.jsx";
 import WithdrawalPage from "./pages/WithdrawalPage.jsx";
+
+import { getToken } from "./auth.js";
 
 function App() {
 	useEffect(() => {
@@ -21,7 +25,10 @@ function App() {
 			.then(res => console.log(res));
 	}, []);
 
+	const [token, setToken] = useState(getToken());
+
 	return (
+		<AuthContext.Provider value={{ token, setToken }}>
 			<BrowserRouter>
 				<Sidebar />
 
@@ -44,6 +51,7 @@ function App() {
 					<Route path="/withdrawals/:account_id" element={<WithdrawalPage />} />
 				</Routes>
 			</BrowserRouter>
+		</AuthContext.Provider>
 	);
 }
 
