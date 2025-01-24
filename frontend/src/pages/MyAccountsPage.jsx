@@ -3,7 +3,7 @@ import MyAccounts from "../component/MyAccounts";
 
 export default function MyAccountsPage() {
 	return (
-		<div>
+		<div className="w-full flex-col flex">
 			<MyAccounts />
 			<CreateAccount />
 		</div>
