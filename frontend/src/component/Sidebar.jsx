@@ -55,6 +55,13 @@ export default function Sidebar() {
 						>
 							Profile
 						</Link>
+						<Link
+							to="/dashboard"
+							className="py-2 px-6 hover:bg-secondary-dark hover:text-white transition-colors duration-300s ease"
+						>
+							Dashboard
+						</Link>
+						
 					</>
 				)}
 			</nav>
