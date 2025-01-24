@@ -13,7 +13,9 @@ export default function CancelTransaction({
 	return (
 		<Snackbar
 			open={transactionToCancel}
-			onClose={() => setTransactionToCancel()}
+			onClose={(_, reason) =>
+				reason !== "clickaway" && setTransactionToCancel()
+			}
 			autoHideDuration={5000}
 			disableWindowBlurListener={true}
 			anchorOrigin={{ vertical: "top", horizontal: "right" }}
