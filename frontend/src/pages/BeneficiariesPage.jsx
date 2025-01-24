@@ -3,7 +3,7 @@ import Beneficiaries from "../component/Beneficiaries";
 
 export default function BeneficiariesPage() {
 	return (
-		<div>
+		<div className="w-full p-8">
 			<Beneficiaries />
 			<AddBeneficiary />
 		</div>
