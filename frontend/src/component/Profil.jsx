@@ -91,7 +91,7 @@ function Profil() {
         className="flex flex-col gap-4 bg-white p-6 shadow-md rounded-lg max-w-md mx-auto w-full"
       >
 		<h2 className="text-center text-primary font-bold text-2xl mb-3">
-          Créer un compte
+          Changer de mot de passe
         </h2>
         <InputField
           type="password"
